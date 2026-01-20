@@ -1,5 +1,9 @@
 import { Calendar } from "react-native-calendars";
 import { useState } from "react";
+import {Dimensions } from "react-native";
+
+const width = Dimensions.get("window").width;
+const height = Dimensions.get("window").height;
 
 export default function DatePicker() {
   const [selected, setSelected] = useState({});
@@ -7,9 +11,9 @@ export default function DatePicker() {
   return (
     <Calendar
       style={{
-        marginTop: -35,
-        width: 300,
-        height: 285,       
+        marginTop: -height * 0.04,
+        width: width * 0.85,
+        height: height * 0.35,       
         alignSelf: "center",
         transform: [{ scale: 0.85 }]
       }}
