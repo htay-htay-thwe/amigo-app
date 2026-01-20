@@ -1,4 +1,4 @@
-import { View, TextInput, Text } from "react-native";
+import { View, TextInput, TextInputProps } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import clsx from "clsx";
 
@@ -9,9 +9,11 @@ type Props = {
   secureTextEntry?: boolean;
   value?: string;
   onChangeText?: (text: string) => void;
+  inputMode?: "numeric" | "decimal" | "email" | "tel" | "text" | "url";
   icon?: keyof typeof Ionicons.glyphMap;
   iconSize?: number;
   iconColor?: string;
+
 };
 
 export default function Input({

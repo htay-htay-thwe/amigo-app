@@ -6,8 +6,6 @@ import StepIndicatorComponent from "../../components/ui/StepIndicatorComponent";
 import Button from "../../components/ui/Button";
 import { useNavigation } from "@react-navigation/native";
 
-
-
 export default function StepOne() {
       const navigation = useNavigation();   
     return (

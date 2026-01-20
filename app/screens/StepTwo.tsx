@@ -4,9 +4,11 @@ import StepIndicatorComponent from "../../components/ui/StepIndicatorComponent";
 import Button from "../../components/ui/Button";
 import DatePicker from "../../components/ui/DatePicker";
 import TripToggle from "../DataForm/TripToggle";
+import { useNavigation } from "@react-navigation/native";
 
 
 export default function StepTwo() {
+    const navigation = useNavigation();   
     return (
         <View>
             <Head />
@@ -22,8 +24,9 @@ export default function StepTwo() {
                     <DatePicker />
 
                     <View className="items-center ">
-                        <Button title="Next" variant="primary" size="md" />
+                        <Button onPress={() => navigation.navigate("StepThree")} title="Next" variant="primary" size="md" />
                     </View>
+
                 </View>
             </SafeAreaView>
         </View>
