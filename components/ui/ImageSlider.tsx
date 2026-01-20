@@ -23,7 +23,7 @@ export default function ImageSlider() {
         scrollAnimationDuration={800}
         renderItem={({ item }) => (
           <Image
-            source={{ uri: item }}
+            source={item}
             style={{ width, height: 200, borderRadius: 16 }}
             resizeMode="cover"
           />
