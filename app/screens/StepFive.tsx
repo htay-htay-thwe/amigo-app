@@ -120,7 +120,7 @@ export default function StepFive() {
                     </ScrollView>
                 </KeyboardAvoidingView>
                 <View className="items-center mt-12">
-                    <Button title="Next" variant="primary" size="md" />
+                    <Button onPress={() => navigation.navigate("StepSix")} title="Next" variant="primary" size="md" />
                 </View>
             </SafeAreaView>
             
