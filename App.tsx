@@ -1,20 +1,17 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import StepOne from "./app/screens/StepOne";
-import StepTwo from "./app/screens/StepTwo";
-
+import BottomTabs from "./components/navigation/BottomTabs";
+import StepStack from "./components/navigation/StepStack";
 
 
 const Stack = createNativeStackNavigator();
 
-
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="StepOne" component={StepOne}  options={{ headerShown: false }}/>
-         <Stack.Screen name="StepTwo" component={StepTwo}  options={{ headerShown: false }}/>
-        {/* <Stack.Screen name="Details" component={DetailsScreen} /> */}
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="MainTabs" component={BottomTabs} />
+        <Stack.Screen name="Steps" component={StepStack} />
       </Stack.Navigator>
     </NavigationContainer>
   );

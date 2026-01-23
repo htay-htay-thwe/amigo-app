@@ -13,9 +13,9 @@ export default function DatePicker() {
       style={{
         marginTop: -height * 0.04,
         width: width * 0.85,
-        height: height * 0.35,       
+        height: height * 0.38,       
         alignSelf: "center",
-        transform: [{ scale: 0.85 }]
+        transform: [{ scale: 0.9 }]
       }}
       
       markingType={"period"}

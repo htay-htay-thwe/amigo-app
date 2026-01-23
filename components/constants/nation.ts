@@ -1,0 +1,1 @@
+ export   const nationalities = ["Thai", "American", "European", "Myanmar", "Japanese", "Australian", "Korean", "Chinese"];

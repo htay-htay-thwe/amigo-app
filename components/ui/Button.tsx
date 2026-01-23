@@ -3,13 +3,14 @@ import { Ionicons } from "@expo/vector-icons";
 import clsx from "clsx";
 
 type Props = {
-  title: string;
+  title?: string;
   onPress?: () => void;
   variant?: "primary" | "secondary";
   size?: "lg" | "md" | "sm";
   icon?: keyof typeof Ionicons.glyphMap;
   iconColor?: string;
   iconSize?: number;
+  sign?: string;
 };
 
 export default function Button({
@@ -20,30 +21,32 @@ export default function Button({
   iconColor = "#ffffff",
   icon,
   iconSize = 25,
+  sign="",
 }: Props) {
   return (
+  sign ? (
+    <TouchableOpacity
+      className="items-center justify-center w-10 h-10 rounded-full bg-primary">
+      <Text className="text-2xl font-bold text-white">{sign}</Text>
+    </TouchableOpacity>
+  ) : (
     <TouchableOpacity
       onPress={onPress}
       className={clsx(
-        "h-16 rounded-xl flex-row items-center justify-center gap-2",
-
-        size === "lg" && "w-full",
-        size === "md" && "w-1/2",
-        size === "sm" && "w-1/3",
-
+        "rounded-xl flex-row items-center justify-center gap-2",
+        size === "lg" && "w-full h-16",
+        size === "md" && "w-1/2 h-16",
+        size === "sm" && "w-1/3 h-10",
         variant === "primary" && "bg-primary",
         variant === "secondary" && "bg-secondary border border-primary"
       )}
     >
-
       <Text
         className={clsx(
           "font-semibold",
-
           size === "lg" && "text-xl",
           size === "md" && "text-lg",
           size === "sm" && "text-base",
-
           variant === "primary" && "text-white",
           variant === "secondary" && "text-black"
         )}
@@ -59,5 +62,6 @@ export default function Button({
         />
       )}
     </TouchableOpacity>
-  );
+  )
+);
 }

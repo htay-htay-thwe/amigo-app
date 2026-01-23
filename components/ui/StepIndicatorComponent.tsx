@@ -34,16 +34,17 @@ const customStyles = {
 };
 
 type Props = {
-    labels?: string;
+    currentStep?: number;
 };
 
 export default function StepIndicatorComponent({
-    labels = "1"
+    currentStep = 1
 }: Props) {
 
     return (
         <StepIndicator
-            currentPosition={parseInt(labels, 10)}
+            stepCount={6}
+            currentPosition={currentStep - 1}
             customStyles={customStyles}
         />
     );
