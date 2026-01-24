@@ -23,7 +23,7 @@ export default function Button({
   icon,
   iconSize = 25,
   sign = "",
-  checked = false,
+  checked = true,
 }: Props) {
   return (
     sign ? (

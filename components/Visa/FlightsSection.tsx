@@ -4,12 +4,13 @@ import type { FlightGroup } from "../constants/types";
 
 type Props = {
   flights: FlightGroup[];
-  setOpen: (open: boolean) => void;
+  setOpen?: (open: boolean) => void;
   editable?: boolean;
+  checkable?: boolean;
   setEditPayload?: (payload: { title: string; data: any;type: "flight" | "accommodation" | "itinerary" } | null) => void;
 };
 
-export default function FlightsSection({editable, flights, setOpen, setEditPayload }: Props) {
+export default function FlightsSection({editable, flights, setOpen, setEditPayload, checkable }: Props) {
   const flightGroup = flights[0]; // one trip → one outbound + return
 
   return (
@@ -17,6 +18,7 @@ export default function FlightsSection({editable, flights, setOpen, setEditPaylo
       <Text className="mb-3 text-lg font-semibold">Flights</Text>
 
       <FlightCard
+        checkable={checkable}
         setOpen={setOpen}
         setEditPayload={setEditPayload}
         editable={editable}
@@ -26,6 +28,7 @@ export default function FlightsSection({editable, flights, setOpen, setEditPaylo
       />
 
       <FlightCard
+        checkable={checkable}
         setOpen={setOpen}
         setEditPayload={setEditPayload}
         editable={editable}

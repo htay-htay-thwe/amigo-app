@@ -47,9 +47,7 @@ export default function TripSummaryView({
     };
 
     return (
-        <View className="px-2 mt-7">
-            <View className="">
-
+        <View className="px-2 ">
                 {/* Destination */}
                 <TouchableOpacity onPress={toggle} className="flex-row items-center justify-between w-full">
                     <View className="">
@@ -80,7 +78,6 @@ export default function TripSummaryView({
                         </View>
                     </View>
                 }
-            </View>
         </View>
     );
 }

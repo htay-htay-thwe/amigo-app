@@ -2,12 +2,13 @@ import { View, Text } from "react-native";
 import ActivityCard from "./ActivityCard";
 
 type Props = {
-  setOpen: (open: boolean) => void;
+  setOpen?: (open: boolean) => void;
   editable?: boolean;
+  checkable?: boolean;
   setEditablePayload?: (payload: { title: string; data: any } | null) => void;
 };
 
-export default function DaySection({ day, setOpen, editable, setEditPayload }: { day: any; setOpen: (open: boolean) => void } & Props) {
+export default function DaySection({ day, setOpen, editable, checkable, setEditablePayload }: { day: any; setOpen: (open: boolean) => void } & Props) {
   return (
     <View className="p-3 mb-1">
       {/* Day Header */}
@@ -34,8 +35,9 @@ export default function DaySection({ day, setOpen, editable, setEditPayload }: {
           </View>
 
           <ActivityCard
-            setEditPayload={setEditPayload}
+            setEditPayload={setEditablePayload}
             day={day}
+            checkable={checkable}
             editable={editable}
             setOpen={setOpen}
             activity={activity}

@@ -6,8 +6,8 @@ import React from "react";
 
 type Props = {
     scrollY: Animated.Value;
-    setEditMode: (editMode: boolean) => void;
-    editMode: boolean;
+    setEditMode?: (editMode: boolean) => void;
+    editMode?: boolean;
 };
 
 export default function CollapsibleTripHeader({ scrollY, setEditMode, editMode }: Props) {
@@ -48,7 +48,7 @@ export default function CollapsibleTripHeader({ scrollY, setEditMode, editMode }
                 paddingTop: 20,
             }}>
             {/* Full summary */}
-            <Animated.View style={{ opacity: summaryOpacity }}>
+            <Animated.View style={{ opacity: summaryOpacity,marginTop:20 }}>
                 <TripSummaryView
                     show={show}
                     setShow={setShow}

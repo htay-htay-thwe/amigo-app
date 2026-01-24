@@ -4,7 +4,6 @@ import FlightsSection from "../../components/Visa/FlightsSection";
 import AccommodationCard from "../../components/Visa/Accommodation";
 import ItineraryTimeline from "../../components/Timeline/ItineraryTimeline";
 import { data, itineraryData } from "../../components/constants/data";
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TripDetails() {
     return (

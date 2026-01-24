@@ -4,28 +4,36 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import ImageCarousel from "../Timeline/ImageCarousel";
 import { MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import clsx from "clsx";
+import { useState } from "react";
 
 
 type Props = {
   accommodation: Accommodation;
   editable?: boolean;
+  checkable?: boolean;
   setOpen?: (open: boolean) => void;
-  setEditPayload?: (payload: { title: string; data: any;type: "flight" | "accommodation" | "itinerary" } | null) => void;
+  setEditPayload?: (payload: { title: string; data: any; type: "flight" | "accommodation" | "itinerary" } | null) => void;
 };
 
-export default function AccommodationCard({ accommodation, editable, setOpen, setEditPayload }: Props) {
+export default function AccommodationCard({ accommodation, editable, checkable, setOpen, setEditPayload }: Props) {
 
-    const modalContent = (accommodation:string) => {
+  const [checked, setChecked] = useState(false);
+  
+  const modalContent = (accommodation: string) => {
     setOpen && setOpen(true);
     setEditPayload && setEditPayload({
       type: "accommodation",
-      title: "Edit "+ accommodation,
+      title: "Edit " + accommodation,
       data: "",
     })
   }
 
   return (
-    <View className="p-4 bg-white shadow-sm rounded-2xl">
+    <View className={clsx("p-4 bg-white shadow-sm rounded-2xl",
+      checked === true && "bg-blue-50 border border-blue-300 opacity-50"
+    )}>
       <View className="flex-row items-center gap-2 mb-1">
         <View>
           <FontAwesome name="hotel" size={20} color="blue" />
@@ -38,6 +46,19 @@ export default function AccommodationCard({ accommodation, editable, setOpen, se
             <TouchableOpacity onPress={() => modalContent('accommodation')}>
               <MaterialIcons name="edit" size={26} color="blue" />
             </TouchableOpacity>
+          }
+          {checkable &&
+            <View className="flex justify-end">
+              <BouncyCheckbox
+                size={22}
+                isChecked={checked}
+                fillColor="#2563eb"
+                unFillColor="#fff"
+                iconStyle={{ borderColor: "#2563eb" }}
+                innerIconStyle={{ borderWidth: 2 }}
+                onPress={setChecked}
+              />
+            </View>
           }
         </View>
 

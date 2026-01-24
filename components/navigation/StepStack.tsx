@@ -10,6 +10,7 @@ import TripPlan from "../../app/screens/TripPlan";
 import Save from "../../app/screens/Save";
 import TripDetails from "../../app/screens/TripDetails";
 import TripEdit from "../../app/screens/TripEdit";
+import PlanCheck from "../../app/screens/PlanCheck";
 
 
 const Stack = createNativeStackNavigator();
@@ -44,6 +45,20 @@ export default function StepStack() {
                 options={{
                     headerShown: true,
                     headerTitle: "Edit Trip Plans",
+                    headerStyle: {
+                        backgroundColor: "#DBEAFE",
+                    },
+                    headerTintColor: "black",
+                    headerTitleStyle: {
+                        fontSize: 18,
+                        fontWeight: "500",
+                        color: "#0D47A1"
+                    },
+                }} />
+            <Stack.Screen name="PlanCheck" component={PlanCheck}
+                options={{
+                    headerShown: true,
+                    headerTitle: "Plan Check",
                     headerStyle: {
                         backgroundColor: "#DBEAFE",
                     },

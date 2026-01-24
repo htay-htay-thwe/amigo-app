@@ -31,9 +31,6 @@ export default function TripEdit() {
                 itinerary={itineraryData.itinerary}
                 header={
                     <View className="px-4 pt-2">
-                        <TouchableOpacity onPress={toggle} className="self-start px-3 py-1 mb-4 bg-blue-100 rounded-full">
-                            <Text>Open</Text>
-                        </TouchableOpacity>
                         <VisaCard visa={data.visa_requirements} />
 
                         <View className="h-4" />

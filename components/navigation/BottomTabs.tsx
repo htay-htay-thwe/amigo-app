@@ -5,6 +5,7 @@ import CenterTabButton from "../ui/CenterTabButton";
 import StepOne from "../../app/screens/StepOne";
 import { Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import Plan from "../../app/screens/Plan";
 
 const Tab = createBottomTabNavigator();
 
@@ -30,15 +31,42 @@ export default function BottomTabs() {
                     tabBarIcon: ({ focused }) => (
                         <Ionicons name="notifications-outline" size={22} />
                     ),
-                }}/>
+                }} />
 
             <Tab.Screen
-                name="MyItems"
-                component={EmptyScreen}
+                name="MyPlan"
+                component={Plan}
                 options={{
-                    tabBarIcon: ({ focused }) => (
-                        <Ionicons name="book-outline" size={22} />
+                    tabBarIcon: ({ focused, color, size }) => (
+                        <Ionicons
+                            name="book-outline"
+                            size={focused ? size + 2 : size}
+                            color={color}
+                        />
                     ),
+                    tabBarLabel: ({ focused, color }) => (
+                        <Text
+                            style={{
+                                color,
+                                fontSize: focused ? 13 : 12,
+                                fontWeight: focused ? "600" : "400",
+                            }}>
+                            MyPlans
+                        </Text>
+                    ),
+                    headerShown: true,
+                    headerTitle: "Trips Note",
+                    headerStyle: {
+                        backgroundColor: "#DBEAFE",
+                        height: 80,
+                    },
+                    headerTintColor: "#fff",
+                    headerTitleStyle: {
+                        fontSize: 18,
+                        fontWeight: "500",
+                        color: "#0D47A1",
+                        marginLeft: 15,
+                    },
                 }}
             />
 
@@ -92,7 +120,7 @@ export default function BottomTabs() {
             <Tab.Screen
                 name="Setting"
                 component={EmptyScreen}
-                 options={{
+                options={{
                     tabBarIcon: ({ focused, color, size }) => (
                         <Ionicons
                             name="settings"

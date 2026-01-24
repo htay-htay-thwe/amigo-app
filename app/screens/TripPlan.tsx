@@ -48,33 +48,31 @@ export default function TripPlan() {
                 <CollapsibleTripHeader scrollY={scrollY} setEditMode={setEditMode} editMode={editMode} />
 
             )}
-            <Animated.ScrollView
-                contentContainerStyle={{ paddingTop: 50 }}
-                onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                    { useNativeDriver: false }
-                )}
-                scrollEventThrottle={16}>
-                <View className="px-4 mt-2">
-                    <VisaCard visa={data.visa_requirements} />
 
-                    <View className="h-4" />
+            <ItineraryTimeline
+                itinerary={itineraryData.itinerary}
+                header={
+                    <View className="px-4 mt-20">
+                        <VisaCard visa={data.visa_requirements} />
 
-                    <FlightsSection flights={data.flights} />
+                        <View className="h-4" />
 
-                    <View className="h-4" />
+                        <FlightsSection flights={data.flights} />
 
-                    <AccommodationCard accommodation={data.accommodation} />
-                </View>
-                <ItineraryTimeline itinerary={itineraryData.itinerary} />
+                        <View className="h-4" />
 
-                <View className="flex-row justify-center gap-4 pl-8 pr-8 mb-5 ">
-                    <Button title="Cancel" variant="primary" size="md" />
-                    <Button onPress={() => navigation.navigate("MainTabs", {
-                        screen: "Save",
-                    })} title="Save" variant="primary" size="md" />
-                </View>
-            </Animated.ScrollView>
+                        <AccommodationCard accommodation={data.accommodation} />
+
+                        <View className="h-6" />
+                    </View>
+                }
+            />
+            <View className="flex-row justify-center gap-4 pt-2 pl-8 pr-8 mb-1 shadow-xl ">
+                <Button title="Cancel" variant="primary" size="md" />
+                <Button onPress={() => navigation.navigate("MainTabs", {
+                    screen: "Save",
+                })} title="Save" variant="primary" size="md" />
+            </View>
         </SafeAreaView>
     );
 }

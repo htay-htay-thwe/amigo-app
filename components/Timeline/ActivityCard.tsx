@@ -2,20 +2,22 @@ import { View, Text, Pressable, Linking, TouchableOpacity } from "react-native";
 import ImageCarousel from "./ImageCarousel";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { type } from './../constants/types';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import clsx from "clsx";
 
 type Props = {
   activity: any;
   youtubeLink?: string;
   setOpen?: (open: boolean) => void;
   editable?: boolean;
+  checkable?: boolean;
   day?: any;
-  setEditPayload?: (payload: { title: string; data: any;type: "flight" | "accommodation" | "itinerary" } | null) => void;
+  setEditPayload?: (payload: { title: string; data: any; type: "flight" | "accommodation" | "itinerary" } | null) => void;
 };
 
 
-export default function ActivityCard({ day, activity, youtubeLink, setOpen, editable, setEditPayload }: Props) {
-
+export default function ActivityCard({ day, activity, youtubeLink, setOpen, checkable, editable, setEditPayload }: Props) {
+  const [checked, setChecked] = useState(false);
   const modalContent = (day: number, time: string) => {
     setOpen && setOpen(true);
     setEditPayload && setEditPayload({
@@ -25,7 +27,10 @@ export default function ActivityCard({ day, activity, youtubeLink, setOpen, edit
     })
   }
   return (
-    <View className="flex-1 p-4 bg-white border border-gray-200 shadow-sm rounded-2xl">
+    <View className={clsx(
+      "flex-1 p-4 bg-white border border-gray-200 shadow-sm rounded-2xl",
+      checked === true && "bg-blue-50 border border-blue-300 opacity-50"
+    )}>
 
       {/* Image Carousel */}
       <ImageCarousel images={activity.activity_photos} />
@@ -62,6 +67,20 @@ export default function ActivityCard({ day, activity, youtubeLink, setOpen, edit
               </Text>
             </Pressable>
           )}
+
+          {checkable &&
+            <View className="flex justify-end">
+              <BouncyCheckbox
+                size={22}
+                isChecked={checked}
+                fillColor="#2563eb"
+                unFillColor="#fff"
+                iconStyle={{ borderColor: "#2563eb" }}
+                innerIconStyle={{ borderWidth: 2 }}
+                onPress={setChecked}
+              />
+            </View>
+          }
         </View>
       </View>
     </View>
