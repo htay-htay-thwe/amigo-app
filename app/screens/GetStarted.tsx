@@ -1,10 +1,24 @@
 import { ImageBackground, Text, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../../components/ui/Button";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+
+type RootStackParamList = {
+    Home: undefined;
+    GetStarted: undefined;
+    Login: undefined;
+    CreateAccount: undefined;
+    StepOne: undefined;
+    StepTwo: undefined;
+    StepThree: undefined;
+    StepFour: undefined;
+    StepFive: undefined;
+    StepSix: undefined;
+    StepConfirm: undefined;
+};
 
 export default function GetStarted() {
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     return (
         <ImageBackground

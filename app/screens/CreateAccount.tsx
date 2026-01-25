@@ -4,14 +4,37 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
+import { config, isGoogleConfigured, isFacebookConfigured } from '../../components/constants/config';
+
+// Configure Google Sign In
+GoogleSignin.configure({
+  webClientId: config.googleWebClientId,
+});
+
+type RootStackParamList = {
+  Home: undefined;
+  GetStarted: undefined;
+  Login: undefined;
+  CreateAccount: undefined;
+  StepOne: undefined;
+  StepTwo: undefined;
+  StepThree: undefined;
+  StepFour: undefined;
+  StepFive: undefined;
+  StepSix: undefined;
+  StepConfirm: undefined;
+};
 
 export default function CreateAccount() {
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleCreateAccount = () => {
         // Validation
@@ -35,14 +58,71 @@ export default function CreateAccount() {
         ]);
     };
 
-    const handleGoogleSignIn = () => {
-        console.log("Sign in with Google");
-        Alert.alert("Google Sign In", "Google authentication would be implemented here");
+    const handleGoogleSignIn = async () => {
+        try {
+            setLoading(true);
+            await GoogleSignin.hasPlayServices();
+            const userInfo = await GoogleSignin.signIn();
+            const user = userInfo.data?.user;
+            
+            console.log('Google User Info:', userInfo);
+            Alert.alert(
+                "Success",
+                `Welcome ${user?.name || 'User'}!`,
+                [{ text: "OK", onPress: () => navigation.navigate("StepOne") }]
+            );
+        } catch (error: any) {
+            console.error('Google Sign In Error:', error);
+            if (error.code === 'SIGN_IN_CANCELLED') {
+                Alert.alert("Cancelled", "Sign in was cancelled");
+            } else if (error.code === 'IN_PROGRESS') {
+                Alert.alert("In Progress", "Sign in is already in progress");
+            } else if (error.code === 'PLAY_SERVICES_NOT_AVAILABLE') {
+                Alert.alert("Error", "Play services not available");
+            } else {
+                Alert.alert("Error", "Failed to sign in with Google");
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleFacebookSignIn = () => {
-        console.log("Sign in with Facebook");
-        Alert.alert("Facebook Sign In", "Facebook authentication would be implemented here");
+    const handleFacebookSignIn = async () => {
+        try {
+            setLoading(true);
+            const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+            
+            if (result.isCancelled) {
+                Alert.alert("Cancelled", "Facebook login was cancelled");
+            } else {
+                const data = await AccessToken.getCurrentAccessToken();
+                
+                if (!data) {
+                    Alert.alert("Error", "Failed to get Facebook access token");
+                    return;
+                }
+
+                console.log('Facebook Access Token:', data.accessToken.toString());
+                
+                // Fetch user info
+                const response = await fetch(
+                    `https://graph.facebook.com/me?access_token=${data.accessToken}&fields=id,name,email,picture.type(large)`
+                );
+                const userInfo = await response.json();
+                
+                console.log('Facebook User Info:', userInfo);
+                Alert.alert(
+                    "Success",
+                    `Welcome ${userInfo.name || 'User'}!`,
+                    [{ text: "OK", onPress: () => navigation.navigate("StepOne") }]
+                );
+            }
+        } catch (error) {
+            console.error('Facebook Sign In Error:', error);
+            Alert.alert("Error", "Failed to sign in with Facebook");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

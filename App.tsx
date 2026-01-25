@@ -1,5 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Home from "./app/Home";
 import GetStarted from "./app/screens/GetStarted";
 import Login from "./app/screens/Login";
 import CreateAccount from "./app/screens/CreateAccount";
@@ -19,7 +20,8 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="GetStarted">
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={Home}  options={{ headerShown: false }}/>
         <Stack.Screen name="GetStarted" component={GetStarted}  options={{ headerShown: false }}/>
         <Stack.Screen name="Login" component={Login}  options={{ headerShown: false }}/>
         <Stack.Screen name="CreateAccount" component={CreateAccount}  options={{ headerShown: false }}/>
@@ -36,3 +38,5 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+

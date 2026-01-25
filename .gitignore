@@ -32,6 +32,11 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env
+
+# OAuth Credentials (IMPORTANT: Never commit these!)
+app.json.local
+credentials.json
 
 # typescript
 *.tsbuildinfo
