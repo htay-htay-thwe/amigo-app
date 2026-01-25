@@ -17,7 +17,6 @@ export default function StepFive() {
     const navigation = useNavigation();
     const [nationality, setNationality] = useState("Thai");
     const [tripType, setTripType] = useState<"domestic" | "international">("domestic");
-
     const setNationalityStore = useTripStore((s) => s.setNationality);
     const setTravelTypeStore = useTripStore((s) => s.setTravelType);
     const [error, setError] = useState("");

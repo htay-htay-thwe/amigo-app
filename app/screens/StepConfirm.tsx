@@ -3,9 +3,6 @@ import Head from "../DataForm/Head";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../../components/ui/Button";
 import { useNavigation, useRoute } from "@react-navigation/native";
-// import DataConfirm from "../../components/ui/DataConfirm";
-
-
 
 export default function StepConfirm() {
 
