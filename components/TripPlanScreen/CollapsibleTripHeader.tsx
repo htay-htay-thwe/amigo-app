@@ -8,9 +8,10 @@ type Props = {
     scrollY: Animated.Value;
     setEditMode?: (editMode: boolean) => void;
     editMode?: boolean;
+    tripSummary?: { key: string; label: string; value: string }[];
 };
 
-export default function CollapsibleTripHeader({ scrollY, setEditMode, editMode }: Props) {
+export default function CollapsibleTripHeader({ scrollY, setEditMode, editMode, tripSummary }: Props) {
     const [show, setShow] = React.useState(false);
     const HEADER_MAX_HEIGHT = show ? 220 : 90;
     const HEADER_MIN_HEIGHT = show ? 75 : 75;
@@ -48,23 +49,24 @@ export default function CollapsibleTripHeader({ scrollY, setEditMode, editMode }
                 paddingTop: 20,
             }}>
             {/* Full summary */}
-            <Animated.View style={{ opacity: summaryOpacity,marginTop:20 }}>
+            <Animated.View style={{ opacity: summaryOpacity, marginTop: 20 }}>
                 <TripSummaryView
                     show={show}
                     setShow={setShow}
-                    destination="China"
-                    from="19 Sep"
-                    to="25 Sep"
-                    travelType="Solo"
-                    people="1"
-                    budget="20000 THB"
-                    nationality="Thai"
-                    travelPlan="International"
+                    destination={tripSummary?.find(item => item.key === "destination")?.value || ""}
+                    from={tripSummary?.find(item => item.key === "from")?.value || ""}
+                    to={tripSummary?.find(item => item.key === "to")?.value || ""}
+                    travelType={tripSummary?.find(item => item.key === "travelType")?.value || ""}
+                    people={tripSummary?.find(item => item.key === "people")?.value || ""}
+                    budget={tripSummary?.find(item => item.key === "budget")?.value || ""}
+                    nationality={tripSummary?.find(item => item.key === "nationality")?.value || ""}
+                    travelPlan={tripSummary?.find(item => item.key === "plan")?.value || ""}
                 />
             </Animated.View>
 
             {/* Collapsed title */}
             <Animated.View
+                pointerEvents={show ? "auto" : "none"}
                 style={{
                     opacity: titleOpacity,
                     position: "absolute",

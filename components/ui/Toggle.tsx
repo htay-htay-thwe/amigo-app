@@ -12,11 +12,13 @@ type Props<T extends ToggleType> = {
   type?: T;
   value: ValueMap[T];
   onChange: (value: ValueMap[T]) => void;
+  error?: string;
 };
 
 export default function Toggle<T extends ToggleType>({
   type = "tripType" as T,
   value,
+  error,
   onChange,
 }: Props<T>) {
   return (
@@ -24,8 +26,7 @@ export default function Toggle<T extends ToggleType>({
       className={clsx(
         "flex-row p-1.5 border border-[#86a3d0] bg-[#86a3d0] mx-4",
         type === "tripType" ? "rounded-full" : "rounded-lg"
-      )}
-    >
+      )}>
       {/* LEFT */}
       <Pressable
         onPress={() =>

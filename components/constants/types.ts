@@ -38,10 +38,10 @@ export type SingleFlight = {
   cost_thb: number;
 };
 
-export type FlightGroup = {
-  outbound_flight: SingleFlight;
-  return_flight: SingleFlight;
-};
+// export type FlightGroup = {
+//   outbound_flight: SingleFlight;
+//   return_flight: SingleFlight;
+// };
 
 export type Accommodation = {
   hotel_name: string;
@@ -55,13 +55,27 @@ export type Accommodation = {
 };
 
 export type UserInput = {
-  image: string;
+  itinerary: ItineraryDay[];
   destination: string;
   from: string;
   to: string;
   travelType: string;
   people: string;
-  budget: string;
+  budget_limit_thb: string;
+  currency: string;
   nationality: string;
   travelPlan: string;
+};
+
+export type SavedTrip = {
+  id: string;
+  userId: number;
+  createdAt: number;
+  planData: any; 
+  trip_plan: {
+    itinerary: ItineraryDay[];
+    visa_requirements: VisaRequirements;
+    flights: any;
+    accommodation: Accommodation;
+  }
 };

@@ -6,6 +6,7 @@ import StepOne from "../../app/screens/StepOne";
 import { Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Plan from "../../app/screens/Plan";
+import TripPlan from "../../app/screens/TripPlan";
 
 const Tab = createBottomTabNavigator();
 
@@ -26,7 +27,7 @@ export default function BottomTabs() {
 
             <Tab.Screen
                 name="Notification"
-                component={EmptyScreen}
+                component={TripPlan}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Ionicons name="notifications-outline" size={22} />

@@ -1,8 +1,8 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import ItineraryTimeline from "../../components/Timeline/ItineraryTimeline";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { TripSummaryItem } from "../../components/constants/types";
-import { Pressable, Text, View, Animated, ScrollView } from "react-native";
+import { Pressable, Text, View, Animated, ScrollView, ActivityIndicator } from "react-native";
 import TripSummaryEdit from "../../components/TripPlanScreen/TripSummaryEdit";
 import TripSummaryView from "../../components/TripPlanScreen/TripSummaryView";
 import CollapsibleTripHeader from "../../components/TripPlanScreen/CollapsibleTripHeader";
@@ -12,30 +12,104 @@ import AccommodationCard from "../../components/Visa/Accommodation";
 import Button from "../../components/ui/Button";
 import { useNavigation } from "expo-router";
 import { data, itineraryData } from "../../components/constants/data";
+import { usePlanStore } from "../../components/store/plan.store";
+import { useTripStore } from "../../components/store/trip.store";
+
+const messages = [
+    "Our system is planning your trip ✈️",
+    "Finding the best places for you 🗺️",
+    "Optimizing your travel route 🚗",
+    "Checking hidden gems 🌟",
+    "Almost ready… just a moment ⏳",
+];
+
 
 export default function TripPlan() {
     const scrollY = useRef(new Animated.Value(0)).current;
     const [editMode, setEditMode] = useState(false);
+    const [err, setErr] = useState("");
     const navigation = useNavigation();
+    const { loading, planData, error } = usePlanStore();
+    const [loadingText, setLoadingText] = useState(messages[0]);
+    const setSaveTrip = useTripStore((s) => s.setSaveTrip);
+    const trip = useTripStore.getState();
 
     const [tripSummary, setTripSummary] = useState<TripSummaryItem[]>([
-        { key: "destination", label: "Destination", value: "China" },
-        { key: "from", label: "From", value: "19 Sep" },
-        { key: "to", label: "To", value: "25 Sep" },
-        { key: "travelType", label: "Travel Type", value: "Solo" },
-        { key: "people", label: "People", value: "1" },
-        { key: "budget", label: "Budget", value: "20000 THB" },
-        { key: "nationality", label: "Nationality", value: "Thai" },
-        { key: "plan", label: "Travel Plan", value: "International" },
+        { key: "destination", label: "Destination", value: trip.destination },
+        { key: "from", label: "From", value: trip.from },
+        { key: "to", label: "To", value: trip.to },
+        { key: "travelType", label: "Travel Type", value: trip.travelType },
+        { key: "people", label: "People", value: trip.people },
+        { key: "budget", label: "Budget", value: `${trip.amount} ${trip.currency}` },
+        { key: "nationality", label: "Nationality", value: trip.nationality },
+        { key: "plan", label: "Travel Plan", value: trip.travelType },
+        { key: "userPrompt", label: "User Prompt", value: trip.userPrompts },
     ]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            setLoadingText(messages[randomIndex]);
+        }, 1500);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    if (loading) {
+        return (
+            <View className="items-center justify-center flex-1 bg-white">
+                <ActivityIndicator size="large" color="#0D47A1" />
+                <Text className="mt-4 text-base text-center text-gray-600">
+                    {loadingText}
+                </Text>
+            </View>
+        );
+    }
+
+
+    if (error) {
+        return (
+            <View className="items-center justify-center flex-1 p-2">
+                <Text className="text-center text-red-500">{error?.error.message || error?.response?.data || error.message}</Text>
+            </View>
+        );
+    }
+
+    if (!planData) return null;
+
+    const onNext = () => {
+        if (!planData) {
+            setErr("Something went wrong, please try again.");
+            return;
+        }
+
+        setSaveTrip({
+            ...planData,
+            id: Math.random().toString(36).slice(2, 10),
+            userId: 1,
+            createdAt: Date.now(),
+        });
+
+        navigation.navigate("MainTabs", {
+            screen: "Save",
+        });
+    };
+
+    const cancelTrip = () => {
+
+        usePlanStore.getState().clearPlanData();
+        navigation.navigate("MainTabs", {
+            screen: "MyPlan",
+        });
+
+    };
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50">
-            {/* <View className="flex-row items-center justify-between px-4 pt-4">
-                <Text className="text-xl font-bold">Trip Plan</Text>
-                
-            </View> */}
 
+            {err !== "" && (
+                <Text className="mt-2 text-red-500">{err}</Text>
+            )}
             {/* Summary */}
             {editMode ? (
                 <TripSummaryEdit
@@ -45,33 +119,31 @@ export default function TripPlan() {
                     onChange={setTripSummary}
                 />
             ) : (
-                <CollapsibleTripHeader scrollY={scrollY} setEditMode={setEditMode} editMode={editMode} />
+                <CollapsibleTripHeader tripSummary={tripSummary} scrollY={scrollY} setEditMode={setEditMode} editMode={editMode} />
 
             )}
 
             <ItineraryTimeline
-                itinerary={itineraryData.itinerary}
+                scrollY={scrollY}
+                itinerary={planData.trip_plan.itinerary}
                 header={
                     <View className="px-4 mt-20">
-                        <VisaCard visa={data.visa_requirements} />
+                        <VisaCard visa={planData.trip_plan.visa_requirements} />
 
                         <View className="h-4" />
 
-                        <FlightsSection flights={data.flights} />
-
+                        <FlightsSection flights={planData.trip_plan.flights} />
                         <View className="h-4" />
 
-                        <AccommodationCard accommodation={data.accommodation} />
+                        <AccommodationCard accommodation={planData.trip_plan.accommodation} />
 
                         <View className="h-6" />
                     </View>
                 }
             />
             <View className="flex-row justify-center gap-4 pt-2 pl-8 pr-8 mb-1 shadow-xl ">
-                <Button title="Cancel" variant="primary" size="md" />
-                <Button onPress={() => navigation.navigate("MainTabs", {
-                    screen: "Save",
-                })} title="Save" variant="primary" size="md" />
+                <Button onPress={cancelTrip} title="Cancel" variant="primary" size="md" />
+                <Button onPress={onNext} title="Save" variant="primary" size="md" />
             </View>
         </SafeAreaView>
     );

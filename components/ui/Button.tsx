@@ -28,6 +28,8 @@ export default function Button({
   return (
     sign ? (
       <TouchableOpacity
+        onPress={onPress}
+        disabled={checked === false}
         className="items-center justify-center w-10 h-10 rounded-full bg-primary">
         <Text className="text-2xl font-bold text-white">{sign}</Text>
       </TouchableOpacity>
@@ -43,8 +45,7 @@ export default function Button({
           variant === "primary" && "bg-primary",
           variant === "secondary" && "bg-secondary border border-primary",
           checked === false && "opacity-50"
-        )}
-      >
+        )}>
         <Text
           className={clsx(
             "font-semibold",
@@ -54,8 +55,7 @@ export default function Button({
             variant === "primary" && "text-white",
             variant === "secondary" && "text-black",
             checked === false && "opacity-50"
-          )}
-        >
+          )}>
           {title}
         </Text>
 

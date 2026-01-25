@@ -1,9 +1,9 @@
 import { View, Text } from "react-native";
 import FlightCard from "./FlightCard";
-import type { FlightGroup } from "../constants/types";
+
 
 type Props = {
-  flights: FlightGroup[];
+  flights: string[][];
   setOpen?: (open: boolean) => void;
   editable?: boolean;
   checkable?: boolean;
@@ -11,31 +11,23 @@ type Props = {
 };
 
 export default function FlightsSection({editable, flights, setOpen, setEditPayload, checkable }: Props) {
-  const flightGroup = flights[0]; // one trip → one outbound + return
-
+console.log(flights);
   return (
     <View>
       <Text className="mb-3 text-lg font-semibold">Flights</Text>
+{flights.map((flight, index) => (
+  <FlightCard
+    key={index}
+    checkable={checkable}
+    setOpen={setOpen}
+    setEditPayload={setEditPayload}
+    editable={editable}
+    label={index === 0 ? "Departure" : "Return"}
+    condition="details"
+    flight={flight}
+  />
+))}
 
-      <FlightCard
-        checkable={checkable}
-        setOpen={setOpen}
-        setEditPayload={setEditPayload}
-        editable={editable}
-        condition="details"
-        label="Departure"
-        flight={flightGroup.outbound_flight}
-      />
-
-      <FlightCard
-        checkable={checkable}
-        setOpen={setOpen}
-        setEditPayload={setEditPayload}
-        editable={editable}
-        condition="details"
-        label="Return"
-        flight={flightGroup.return_flight}
-      />
     </View>
   );
 }

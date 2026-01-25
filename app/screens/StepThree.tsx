@@ -5,13 +5,29 @@ import StepIndicatorComponent from "../../components/ui/StepIndicatorComponent";
 import Button from "../../components/ui/Button";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
+import clsx from "clsx";
+import { useTripStore } from "../../components/store/trip.store";
 
 export default function StepThree() {
     const navigation = useNavigation();
     const [selectedOption, setSelectedOption] = useState<"solo" | "friends" | "family">("solo");
     const [count, setCount] = useState(3);
+    const setPeople = useTripStore((s) => s.setPeople);
 
-    const increment = () => setCount(count + 1);
+    const [error, setError] = useState("");
+
+    const onNext = () => {
+        if (selectedOption.trim() === "") {
+            setError("* required");
+            return;
+        }
+        setPeople(selectedOption);
+        navigation.navigate("StepFour");
+    };
+
+    const increment = () => {
+        setCount(count + 1)
+    };
     const decrement = () => {
         if (count > 1) setCount(count - 1);
     };
@@ -38,12 +54,16 @@ export default function StepThree() {
 
                                 {/* Selection Buttons */}
                                 <View className="gap-3 mt-5">
+                                    {error !== "" && (
+                                        <Text className="text-red-500 mt-2">{error}</Text>
+                                    )}
                                     <Button
                                         title="Solo"
                                         variant={selectedOption === "solo" ? "primary" : "secondary"}
                                         size="lg"
                                         onPress={() => setSelectedOption("solo")}
                                         icon="person"
+                                        iconColor={selectedOption === "solo" ? "#ffffff" : "#000000"}
                                     />
 
                                     <Button
@@ -52,6 +72,7 @@ export default function StepThree() {
                                         size="lg"
                                         onPress={() => setSelectedOption("friends")}
                                         icon="people"
+                                        iconColor={selectedOption === "friends" ? "#ffffff" : "#000000"}
                                     />
 
                                     <Button
@@ -60,18 +81,21 @@ export default function StepThree() {
                                         size="lg"
                                         onPress={() => setSelectedOption("family")}
                                         icon="home"
+                                        iconColor={selectedOption === "family" ? "#ffffff" : "#000000"}
                                     />
                                 </View>
 
                                 {/* Counter */}
-                                <View className="flex-row items-center justify-center gap-20 mt-5">
-                                    <Button sign="+" onPress={increment} />
+                                <View className={clsx("flex-row items-center justify-center gap-20 mt-5",
+                                    selectedOption === "solo" && "opacity-50"
+                                )}>
+                                    <Button checked={selectedOption !== "solo" ? true : false} sign="+" onPress={increment} />
                                     <Text className="text-3xl font-semibold text-gray-700">{count}</Text>
-                                    <Button sign="−" onPress={decrement} />
+                                    <Button checked={selectedOption !== "solo" ? true : false} sign="−" onPress={decrement} />
                                 </View>
 
                                 <View className="items-center mt-10">
-                                    <Button onPress={() => navigation.navigate("StepFour")} title="Next" variant="primary" size="md" />
+                                    <Button onPress={onNext} title="Next" variant="primary" size="md" />
                                 </View>
                             </View>
                         </SafeAreaView>

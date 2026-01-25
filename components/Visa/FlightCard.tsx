@@ -7,7 +7,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useState } from "react";
 
 type Props = {
-  flight: SingleFlight;
+  flight: string[];
   label: "Departure" | "Return";
   condition?: "details" | "update";
   editable?: boolean;

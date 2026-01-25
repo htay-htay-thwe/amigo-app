@@ -1,36 +1,25 @@
-import {  View } from "react-native";
+import { View } from "react-native";
 import TripCard from "../../components/Save/TripCard";
-
+import { useTripStore } from "../../components/store/trip.store";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Save() {
+    const navigation = useNavigation<any>();
+
+    const saveTrips = useTripStore((s) => s.saveTrip);
+
+    const readTripDetails = (id: string) => {
+        navigation.navigate("Steps", {
+            screen: "TripDetails",
+            params: { tripId: id },
+        });
+    }
+
     return (
         <View className="flex-1 p-4 bg-gray-100">
-            <TripCard
-                userInput={{
-                    image: "https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b",
-                    destination: "China",
-                    from: "19 Sep",
-                    to: "25 Sep",
-                    travelType: "Solo",
-                    people: "1",
-                    budget: "20000 THB",
-                    nationality: "Thai",
-                    travelPlan: "International",
-                }}
-            />
-            <TripCard
-                userInput={{
-                    image: "https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b",
-                    destination: "China",
-                    from: "19 Sep",
-                    to: "25 Sep",
-                    travelType: "Solo",
-                    people: "1",
-                    budget: "20000 THB",
-                    nationality: "Thai",
-                    travelPlan: "International",
-                }}
-            />
+            {saveTrips.map((trip, index) => (
+                <TripCard key={index} userInput={trip.trip_plan} onPress={() => readTripDetails(trip.id)} />
+            ))}
         </View>
     )
 }

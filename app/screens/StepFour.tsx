@@ -17,11 +17,27 @@ import Input from "../../components/ui/Input";
 import StepIndicatorComponent from "../../components/ui/StepIndicatorComponent";
 import Button from "../../components/ui/Button";
 import { currencies } from "../../components/constants/currency";
+import { useTripStore } from "../../components/store/trip.store";
 
 export default function StepFour() {
   const navigation = useNavigation();
   const [currency, setCurrency] = useState("THB");
   const [amount, setAmount] = useState("");
+
+  const setCurrencyStore = useTripStore((s) => s.setCurrency);
+  const setAmountStore = useTripStore((s) => s.setAmount);
+
+  const [error, setError] = useState("");
+
+  const onNext = () => {
+    if (currency.trim() === "" || amount.trim() === "") {
+      setError("* required");
+      return;
+    }
+    setCurrencyStore(currency);
+    setAmountStore(amount);
+    navigation.navigate("StepFive");
+  };
 
   return (
     <KeyboardAvoidingView
@@ -80,22 +96,27 @@ export default function StepFour() {
                   </View>
                 </View>
 
-                {/* Amount Input */}
-                <Input
-                  placeholder="5,000 (numbers only)"
-                  size="lg"
-                  variant="primary"
-                  value={amount}
-                  onChangeText={setAmount}
-                //   keyboardType="numeric"
-                />
+                <View>
+                  {/* Amount Input */}
+                  <Input
+                    placeholder="5,000 (numbers only)"
+                    size="lg"
+                    variant="primary"
+                    error={error}
+                    value={amount}
+                    onChangeText={setAmount}
+                  />
+                  {error !== "" && (
+                    <Text className="text-red-500 mt-2">{error}</Text>
+                  )}
+                </View>
 
                 <View className="items-center mt-12">
                   <Button
                     title="Next"
                     size="md"
                     variant="primary"
-                    onPress={() => navigation.navigate("StepFive")}
+                    onPress={onNext}
                   />
                 </View>
               </View>

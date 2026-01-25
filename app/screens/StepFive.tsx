@@ -5,17 +5,32 @@ import StepIndicatorComponent from "../../components/ui/StepIndicatorComponent";
 import Button from "../../components/ui/Button";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import {  ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import { ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { nationalities } from "../../components/constants/nation";
 import Toggle from "../../components/ui/Toggle";
+import { useTripStore } from "../../components/store/trip.store";
 
 
 export default function StepFive() {
     const navigation = useNavigation();
     const [nationality, setNationality] = useState("Thai");
     const [tripType, setTripType] = useState<"domestic" | "international">("domestic");
+
+    const setNationalityStore = useTripStore((s) => s.setNationality);
+    const setTravelTypeStore = useTripStore((s) => s.setTravelType);
+    const [error, setError] = useState("");
+
+    const onNext = () => {
+        if (nationality.trim() === "" || tripType.trim() === "") {
+            setError("* required");
+            return;
+        }
+        setNationalityStore(nationality);
+        setTravelTypeStore(tripType);
+        navigation.navigate("StepSix");
+    };
 
     return (
         <KeyboardAvoidingView
@@ -31,6 +46,9 @@ export default function StepFive() {
                         contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
                         keyboardShouldPersistTaps="handled">
                         <SafeAreaView style={{ flex: 1 }}>
+                            {error !== "" && (
+                                <Text className="text-red-500 mt-2">{error}</Text>
+                            )}
                             <View className="flex gap-10 px-4 pb-10">
                                 <StepIndicatorComponent currentStep={5} />
 
@@ -89,9 +107,8 @@ export default function StepFive() {
 
 
                             </View>
-
                             <View className="items-center mt-12">
-                                <Button onPress={() => navigation.navigate("StepSix")} title="Next" variant="primary" size="md" />
+                                <Button onPress={onNext} title="Next" variant="primary" size="md" />
                             </View>
                         </SafeAreaView>
                     </ScrollView>
