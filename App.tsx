@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import BottomTabs from "./components/navigation/BottomTabs";
 import StepStack from "./components/navigation/StepStack";
 
-
 const Stack = createNativeStackNavigator();
 
 export default function App() {
