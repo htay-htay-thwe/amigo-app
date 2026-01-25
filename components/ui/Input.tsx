@@ -13,8 +13,8 @@ type Props = {
   icon?: keyof typeof Ionicons.glyphMap;
   iconSize?: number;
   iconColor?: string;
+  error?: string;
 
-};
 
 export default function Input({
   icon,
@@ -22,6 +22,7 @@ export default function Input({
   iconColor = "#000",
   size = "lg",
   variant = "primary",
+  error,
   ...props
 }: Props) {
   return (
@@ -29,7 +30,7 @@ export default function Input({
       {/* Icon (optional) */}
       {icon && (
         <View className="absolute left-4 top-1/2 -translate-y-1/2 z-10">
-          <Ionicons name={icon} size={iconSize} color={iconColor} />
+          <Ionicons name={icon} size={iconSize} color={error === "" ? iconColor : "red"} />
         </View>
       )}
 
@@ -43,7 +44,9 @@ export default function Input({
           size === "sm" && "w-1/3",
 
           variant === "primary" && "border border-primary",
-          variant === "secondary" && "border border-gray-300"
+          variant === "secondary" && "border border-gray-300",
+          error === "" ? "" : "border border-red-500",
+
         )}
         placeholderTextColor="#9CA3AF"
         {...props}

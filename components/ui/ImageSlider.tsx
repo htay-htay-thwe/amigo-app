@@ -2,6 +2,7 @@ import { View, Image, Text, Dimensions } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 
 const width = Dimensions.get("window").width;
+const height = Dimensions.get("window").height;
 
 const slides = [
   {
@@ -36,17 +37,17 @@ export default function ImageSlider() {
     <View>
       <Carousel
         width={width}
-        height={250}
+        height={height * 0.3}
         autoPlay
         autoPlayInterval={3000}
         data={slides}
         scrollAnimationDuration={800}
         renderItem={({ item }) => (
-          <View style={{ width, height: 250 }}>
+          <View style={{ width, height: height * 0.3 }}>
             {/* Background Image */}
             <Image
               source={item.image}
-              style={{ width, height: 250, position: "absolute" }}
+              style={{ width, height: height * 0.3, position: "absolute" }}
               resizeMode="cover"
             />
 
