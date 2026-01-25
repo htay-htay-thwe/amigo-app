@@ -1,100 +1,130 @@
-import { StatusBar, Text, View, TouchableOpacity, Modal, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
-import Head from "../DataForm/Head";
+import {
+  Text,
+  View,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { Dropdown } from "react-native-element-dropdown";
+
+import Head from "../DataForm/Head";
 import Input from "../../components/ui/Input";
 import StepIndicatorComponent from "../../components/ui/StepIndicatorComponent";
 import Button from "../../components/ui/Button";
-import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
+import { currencies } from "../../components/constants/currency";
+import { useTripStore } from "../../components/store/trip.store";
 
 export default function StepFour() {
-    const navigation = useNavigation();
-    const [currency, setCurrency] = useState("THB");
-    const [amount, setAmount] = useState("");
-    const [dropdownVisible, setDropdownVisible] = useState(false);
+  const navigation = useNavigation();
+  const [currency, setCurrency] = useState("THB");
+  const [amount, setAmount] = useState("");
 
-    const currencies = ["THB", "USD", "EUR", "GBP", "JPY", "AUD"];
+  const setCurrencyStore = useTripStore((s: any) => s.setCurrency);
+  const setAmountStore = useTripStore((s: any) => s.setAmount);
 
-    const handleSelectCurrency = (curr: string) => {
-        setCurrency(curr);
-        setDropdownVisible(false);
-    };
+  const [error, setError] = useState("");
 
-    return (
-        <View className="flex-1">
-            <Head />
+  const onNext = () => {
+    if (currency.trim() === "" || amount.trim() === "") {
+      setError("* required");
+      return;
+    }
+    setCurrencyStore(currency);
+    setAmountStore(amount);
+    (navigation as any).navigate("StepFive");
+  };
 
-            {/* Contents */}
-            <SafeAreaView className="flex-1">
-                <KeyboardAvoidingView 
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                    className="flex-1"
-                >
-                    <ScrollView 
-                        contentContainerStyle={{ flexGrow: 1 }}
-                        keyboardShouldPersistTaps="handled"
-                    >
-                        <View className="flex gap-10 px-4 pb-10">
-                            <StepIndicatorComponent labels="3" />
+  return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={{ flex: 1 }}>
+          <Head />
 
-                            <Text className="text-center text-primary px-5 text-2xl font-semibold ">
-                                How much do you plan to spend?
-                            </Text>
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
+            keyboardShouldPersistTaps="handled">
+            <SafeAreaView style={{ flex: 1 }}>
+              <View className="flex gap-10 px-4">
+                <StepIndicatorComponent currentStep={4} />
 
-                            {/* Currency Dropdown */}
-                            <View className="gap-2">
-                                <Text className="text-gray-600 text-sm">Currency</Text>
-                                <TouchableOpacity
-                                    onPress={() => setDropdownVisible(!dropdownVisible)}
-                                    className="border border-primary rounded-xl bg-primary h-16 justify-center px-4 flex-row items-center"
-                                >
-                                    <Text className="text-white font-semibold text-lg flex-1">{currency}</Text>
-                                    <Ionicons 
-                                        name={dropdownVisible ? "chevron-up" : "chevron-down"} 
-                                        size={24} 
-                                        color="white" 
-                                    />
-                                </TouchableOpacity>
+                <Text className="px-4 text-2xl font-semibold text-center text-primary">
+                  How much do you plan to spend?
+                </Text>
 
-                                {/* Dropdown Menu */}
-                                {dropdownVisible && (
-                                    <View className="border border-gray-300 rounded-xl bg-white mt-1 shadow-lg">
-                                        {currencies.map((curr) => (
-                                            <TouchableOpacity
-                                                key={curr}
-                                                onPress={() => handleSelectCurrency(curr)}
-                                                className={`py-4 px-4 border-b border-gray-200 ${
-                                                    curr === currency ? "bg-blue-50" : ""
-                                                }`}
-                                            >
-                                                <Text className={`text-base ${
-                                                    curr === currency ? "text-primary font-semibold" : "text-gray-700"
-                                                }`}>
-                                                    {curr}
-                                                </Text>
-                                            </TouchableOpacity>
-                                        ))}
-                                    </View>
-                                )}
-                            </View>
+                {/* Currency Dropdown */}
+                <View className="gap-2">
+                  <Text className="text-xl text-primary">Currency</Text>
 
-                            {/* Amount Input */}
-                            <Input
-                                placeholder="5,000 (numbers only)"
-                                size="lg"
-                                variant="primary"
-                                value={amount}
-                                onChangeText={setAmount}
-                                inputMode ="numeric"            
-                            />
-                            <View className="items-center mt-12">
-                                <Button onPress={() => navigation.navigate("StepFive")} title="Next" variant="primary" size="md" />
-                            </View>
-                        </View>
-                    </ScrollView>
-                </KeyboardAvoidingView>
+                  <View className="w-2/4">
+                    <Dropdown
+                      data={currencies.map((c) => ({
+                        label: c,
+                        value: c,
+                      }))}
+                      labelField="label"
+                      valueField="value"
+                      value={currency}
+                      onChange={(item: any) => setCurrency(item.value)}
+                      placeholder="Select currency"
+                      style={{
+                        backgroundColor: "#0D47A1",
+                        height: 56,
+                        borderRadius: 12,
+                        paddingHorizontal: 16,
+                        borderColor: "#0D47A1",
+                        borderWidth: 1,
+                      }}
+                      selectedTextStyle={{
+                        color: "white",
+                        fontSize: 16,
+                        fontWeight: "600",
+                      }}
+                      placeholderStyle={{
+                        color: "white",
+                        opacity: 0.8,
+                      }}
+                      iconColor="white"
+                    />
+                  </View>
+                </View>
+
+                <View>
+                  {/* Amount Input */}
+                  <Input
+                    placeholder="5,000 (numbers only)"
+                    size="lg"
+                    variant="primary"
+                    error={error}
+                    value={amount}
+                    onChangeText={setAmount}
+                  />
+                  {error !== "" && (
+                    <Text className="text-red-500 mt-2">{error}</Text>
+                  )}
+                </View>
+
+                <View className="items-center mt-12">
+                  <Button
+                    title="Next"
+                    size="md"
+                    variant="primary"
+                    onPress={onNext}
+                  />
+                </View>
+              </View>
             </SafeAreaView>
+          </ScrollView>
         </View>
-    );
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+  );
 }
+

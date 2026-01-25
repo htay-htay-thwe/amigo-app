@@ -1,129 +1,119 @@
-import { StatusBar, Text, View } from "react-native";
+import { Keyboard, StatusBar, Text, TouchableWithoutFeedback, View } from "react-native";
 import Head from "../DataForm/Head";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Input from "../../components/ui/Input";
 import StepIndicatorComponent from "../../components/ui/StepIndicatorComponent";
 import Button from "../../components/ui/Button";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { TouchableOpacity, Modal, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
-
+import { ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { nationalities } from "../../components/constants/nation";
+import Toggle from "../../components/ui/Toggle";
+import { useTripStore } from "../../components/store/trip.store";
 
 
 export default function StepFive() {
     const navigation = useNavigation();
     const [nationality, setNationality] = useState("Thai");
-    const [dropdownVisible, setDropdownVisible] = useState(false);
     const [tripType, setTripType] = useState<"domestic" | "international">("domestic");
+    const setNationalityStore = useTripStore((s) => s.setNationality);
+    const setTravelTypeStore = useTripStore((s) => s.setTravelType);
+    const [error, setError] = useState("");
 
-    const nationalities = ["Thai", "American", "European", "Myanmar", "Japanese", "Australian", "Korean", "Chinese"];
-
-    const handleSelectNationality = (nat: string) => {
-        setNationality(nat);
-        setDropdownVisible(false);
+    const onNext = () => {
+        if (nationality.trim() === "" || tripType.trim() === "") {
+            setError("* required");
+            return;
+        }
+        setNationalityStore(nationality);
+        setTravelTypeStore(tripType);
+        (navigation as any).navigate("StepSix");
     };
 
     return (
-        <View className="flex-1">
-            <Head />
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={{ flex: 1 }}>
+                    <Head />
 
-            {/* Contents */}
-            <SafeAreaView className="flex-1">
-                <KeyboardAvoidingView 
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                    className="flex-1"
-                >
-                    <ScrollView 
-                        contentContainerStyle={{ flexGrow: 1 }}
-                        keyboardShouldPersistTaps="handled"
-                    >
-                        <View className="flex gap-10 px-4 pb-10">
-                            <StepIndicatorComponent labels="4" />
+                    {/* Contents */}
+                    <ScrollView
+                        contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
+                        keyboardShouldPersistTaps="handled">
+                        <SafeAreaView style={{ flex: 1 }}>
+                            {error !== "" && (
+                                <Text className="text-red-500 mt-2">{error}</Text>
+                            )}
+                            <View className="flex gap-10 px-4 pb-10">
+                                <StepIndicatorComponent currentStep={5} />
 
-                            <Text className="text-center text-primary px-5 text-2xl font-semibold ">
-                                What is your nationality?
-                            </Text>
+                                <Text className="px-5 text-2xl font-semibold text-center text-primary ">
+                                    What is your nationality?
+                                </Text>
 
-                            {/* Dropdown */}
-                            <View className="gap-2">
-                                <Text className="text-gray-600 text-sm">Nationality</Text>
-                                <TouchableOpacity
-                                    onPress={() => setDropdownVisible(!dropdownVisible)}
-                                    className="border border-primary rounded-xl bg-primary h-16 justify-center px-4 flex-row items-center"
-                                >
-                                    <Text className="text-white font-semibold text-lg flex-1">{nationality}</Text>
-                                    <Ionicons 
-                                        name={dropdownVisible ? "chevron-up" : "chevron-down"} 
-                                        size={24} 
-                                        color="white" 
+                                <View className="w-full">
+                                    <Dropdown
+                                        data={nationalities.map((c) => ({
+                                            label: c,
+                                            value: c,
+                                        }))}
+                                        labelField="label"
+                                        valueField="value"
+                                        value={nationality}
+                                        onChange={(item) => setNationality(item.value)}
+                                        placeholder="Select Nationality"
+                                        renderLeftIcon={() => (
+                                            <FontAwesome6 name="flag" size={22} color="white" />
+                                        )}
+                                        placeholderStyle={{
+                                            fontSize: 18,
+                                            textAlign: 'center',
+                                            color: "white"
+                                        }}
+                                        style={{
+                                            backgroundColor: "#0D47A1",
+                                            height: 56,
+                                            borderRadius: 12,
+                                            paddingHorizontal: 16,
+                                            borderColor: "#0D47A1",
+                                            borderWidth: 1,
+                                        }}
+                                        selectedTextStyle={{
+                                            color: "white",
+                                            fontSize: 16,
+                                            fontWeight: "600",
+                                            textAlign: 'center',
+                                        }}
+
+                                        iconColor="white"
                                     />
-                                </TouchableOpacity>
+                                </View>
 
-                                {/* Dropdown Menu */}
-                                {dropdownVisible && (
-                                    <ScrollView className="border border-gray-300 rounded-xl bg-white mt-1 shadow-lg max-h-64">
-                                        {nationalities.map((nat) => (
-                                            <TouchableOpacity
-                                                key={nat}
-                                                onPress={() => handleSelectNationality(nat)}
-                                                className={`py-4 px-4 border-b border-gray-200 ${
-                                                    nat === nationality ? "bg-blue-50" : ""
-                                                }`}
-                                            >
-                                                <Text className={`text-base ${
-                                                    nat === nationality ? "text-primary font-semibold" : "text-gray-700"
-                                                }`}>
-                                                    {nat}
-                                                </Text>
-                                            </TouchableOpacity>
-                                        ))}
-                                    </ScrollView>
-                                )}
+
+                                <Text className="px-5 text-2xl font-semibold text-center text-primary ">
+                                    Is your trip domestic or international?
+                                </Text>
+
+                                <Toggle
+                                    type="tripType"
+                                    value={tripType}
+                                    onChange={setTripType}
+                                />
+
+
                             </View>
-
-                            <Text className="text-center text-primary px-5 text-2xl font-semibold ">
-                                Is your trip domestic or international?
-                            </Text>
-
-                            {/* Toggle Switch */}
-                            <View className="flex-row items-center justify-center rounded-full p-1" style={{ backgroundColor: '#E5E7EB' }}>
-                                <TouchableOpacity
-                                    onPress={() => setTripType("domestic")}
-                                    className={`flex-1 py-3 rounded-full items-center ${
-                                        tripType === "domestic" ? "bg-primary" : "bg-transparent"
-                                    }`}
-                                >
-                                    <Text className={`font-semibold ${
-                                        tripType === "domestic" ? "text-white" : "text-gray-600"
-                                    }`}>
-                                        domestic
-                                    </Text>
-                                </TouchableOpacity>
- 
-                                <TouchableOpacity
-                                    onPress={() => setTripType("international")}
-                                    className={`flex-1 py-3 rounded-full items-center ${
-                                        tripType === "international" ? "bg-primary" : "bg-transparent"
-                                    }`}
-                                >
-                                    <Text className={`font-semibold ${
-                                        tripType === "international" ? "text-white" : "text-gray-600"
-                                    }`}>
-                                        international
-                                    </Text>
-                                </TouchableOpacity>
+                            <View className="items-center mt-12">
+                                <Button onPress={onNext} title="Next" variant="primary" size="md" />
                             </View>
-
-                            
-                        </View>
+                        </SafeAreaView>
                     </ScrollView>
-                </KeyboardAvoidingView>
-                <View className="items-center mt-12">
-                    <Button onPress={() => navigation.navigate("StepSix")} title="Next" variant="primary" size="md" />
+
                 </View>
-            </SafeAreaView>
-            
-        </View>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 }
