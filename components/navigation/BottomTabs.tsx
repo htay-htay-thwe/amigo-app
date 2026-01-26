@@ -12,6 +12,8 @@ import Settings from "../../app/screens/Settings";
 import { useEffect, useState } from 'react';
 import { getCurrentUser as getPersistedUser } from '../services/session';
 import { Image } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 const Tab = createBottomTabNavigator();
 
@@ -23,12 +25,16 @@ export default function BottomTabs() {
     const navigation = useNavigation();
     const [user, setUser] = useState<{ name?: string; handle?: string; photoUrl?: string } | null>(null);
 
-    useEffect(() => {
-        (async () => {
-            const u = await getPersistedUser();
-            setUser(u);
-        })();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            (async () => {
+                const u = await getPersistedUser();
+                console.log('Loaded user:', u);
+                setUser(u);
+            })();
+        }, [])
+    );
+
     return (
         <Tab.Navigator
             initialRouteName="Home"
@@ -53,30 +59,30 @@ export default function BottomTabs() {
                     ),
                     headerShown: true,
                     headerTitle: '',
-                    headerStyle: { backgroundColor: "#DBEAFE", height: 100 },
+                    headerStyle: { backgroundColor: "#DBEAFE", height: 120 },
                     headerTintColor: "#fff",
                     headerLeft: () => (
                         <TouchableOpacity
                             onPress={() => navigation.navigate('MainTabs', { screen: 'Setting' })}
-                            style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 12 }}
+                            style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 16 }}
                         >
                             {user?.photoUrl ? (
-                                <Image source={{ uri: user.photoUrl }} style={{ width: 44, height: 44, borderRadius: 22 }} />
+                                <Image source={{ uri: user.photoUrl }} style={{ width: 52, height: 52, borderRadius: 26 }} />
                             ) : (
-                                <Ionicons name="person-circle-outline" size={44} color={"#0D47A1"} />
+                                <Ionicons name="person-circle-outline" size={52} color={"#0D47A1"} />
                             )}
-                            <View style={{ marginLeft: 10 }}>
-                                <Text style={{ color: '#0D47A1', fontSize: 18, fontWeight: '600' }}>{user?.name || 'Guest'}</Text>
-                                <Text style={{ color: '#6B7280', fontSize: 13 }}>{user?.handle || '@guest'}</Text>
+                            <View style={{ marginLeft: 12 }}>
+                                <Text style={{ color: '#0D47A1', fontSize: 20, fontWeight: '600' }}>{user?.name || 'Guest'}</Text>
+                                <Text style={{ color: '#6B7280', fontSize: 14 }}>{user?.handle || '@guest'}</Text>
                             </View>
                         </TouchableOpacity>
                     ),
                     headerRight: () => (
                         <TouchableOpacity
                             onPress={() => navigation.navigate('Notifications')}
-                            style={{ marginRight: 12 }}
+                            style={{ marginRight: 16 }}
                         >
-                            <Ionicons name="notifications-outline" size={26} color={'#0D47A1'} />
+                            <Ionicons name="notifications-outline" size={30} color={'#0D47A1'} />
                         </TouchableOpacity>
                     ),
                 }}
@@ -109,11 +115,11 @@ export default function BottomTabs() {
                     headerTitle: "Trips Note",
                     headerStyle: {
                         backgroundColor: "#DBEAFE",
-                        height: 100,
+                        height: 120,
                     },
                     headerTintColor: "#fff",
                     headerTitleStyle: {
-                        fontSize: 20,
+                        fontSize: 22,
                         fontWeight: "600",
                         color: "#0D47A1",
                         marginLeft: 15,
@@ -156,11 +162,11 @@ export default function BottomTabs() {
                     headerTitle: "Saved Trips",
                     headerStyle: {
                         backgroundColor: "#DBEAFE",
-                        height: 100,
+                        height: 120,
                     },
                     headerTintColor: "#fff",
                     headerTitleStyle: {
-                        fontSize: 20,
+                        fontSize: 22,
                         fontWeight: "600",
                         color: "#0D47A1",
                         marginLeft: 15,
@@ -194,11 +200,11 @@ export default function BottomTabs() {
                     headerTitle: "Settings",
                     headerStyle: {
                         backgroundColor: "#DBEAFE",
-                        height: 100,
+                        height: 120,
                     },
                     headerTintColor: "#fff",
                     headerTitleStyle: {
-                        fontSize: 20,
+                        fontSize: 22,
                         fontWeight: "600",
                         color: "#0D47A1",
                         marginLeft: 15,
