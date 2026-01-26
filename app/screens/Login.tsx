@@ -1,31 +1,27 @@
-import { useState } from "react";
-import { Text, View, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { useState, useEffect } from "react";
+import { Text, View, TouchableOpacity, ScrollView, Alert, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import * as WebBrowser from 'expo-web-browser';
+import * as AuthSession from 'expo-auth-session';
+import * as Google from 'expo-auth-session/providers/google';
 import Input from "../../components/ui/Input";
+import { setCurrentUser } from '../../components/services/session';
 import Button from "../../components/ui/Button";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
-import { config, isGoogleConfigured, isFacebookConfigured } from '../../components/constants/config';
+import { config } from '../../components/constants/config';
 
-// Configure Google Sign In
-GoogleSignin.configure({
-  webClientId: config.googleWebClientId,
-});
+
+
+
+WebBrowser.maybeCompleteAuthSession();
 
 type RootStackParamList = {
-  Home: undefined;
   GetStarted: undefined;
   Login: undefined;
   CreateAccount: undefined;
-  StepOne: undefined;
-  StepTwo: undefined;
-  StepThree: undefined;
-  StepFour: undefined;
-  StepFive: undefined;
-  StepSix: undefined;
-  StepConfirm: undefined;
+  MainTabs: undefined;
+  Steps: undefined;
 };
 
 export default function Login() {
@@ -34,6 +30,63 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const [request, response, promptAsync] = Google.useAuthRequest({
+        clientId: config.googleWebClientId,
+        scopes: ['openid', 'profile', 'email'],
+        redirectUri: 'http://auth.expo.io/@myathtoo/amigo-app',
+        
+    });
+
+    useEffect(() => {
+        console.log('=== Google Auth Debug ===');
+        console.log('Client ID:', config.googleWebClientId);
+        console.log('Redirect URI:', request?.redirectUri);
+    }, [request]);
+
+    useEffect(() => {
+        console.log('Response changed:', response);
+        if (!response) return;
+        
+        console.log('Response type:', response?.type);
+        
+        if (response?.type === 'error') {
+            console.error('Auth Error:', response.error);
+            Alert.alert('Authentication Error', response.error?.message || 'Failed to authenticate');
+            return;
+        }
+        if (response?.type === 'cancel') {
+            console.log('User cancelled authentication');
+            return;
+        }
+        if (response?.type === 'success') {
+            console.log('Authentication successful!');
+            console.log('Access Token:', response.authentication?.accessToken?.substring(0, 20) + '...');
+            const { authentication } = response;
+            // Get user info from Google
+            fetch('https://www.googleapis.com/userinfo/v2/me', {
+                headers: { Authorization: `Bearer ${authentication?.accessToken}` },
+            })
+            .then(res => res.json())
+                        .then(async userInfo => {
+                                console.log('Google User Info:', userInfo);
+                                await setCurrentUser({
+                                    id: userInfo.id || String(Date.now()),
+                                    name: userInfo.name || undefined,
+                                    email: userInfo.email || undefined,
+                                    photoUrl: userInfo.picture || undefined,
+                                    handle: userInfo.email ? `@${userInfo.email.split('@')[0]}` : undefined,
+                                });
+                                console.log('Navigating to MainTabs...');
+                                navigation.navigate("MainTabs");
+                        })
+            .catch(error => {
+                console.error('Error fetching user info:', error);
+                console.log('Navigating to MainTabs anyway...');
+                navigation.navigate("MainTabs");
+            });
+        }
+    }, [response]);
 
     const handleLogin = () => {
         // Validation
@@ -48,8 +101,15 @@ export default function Login() {
 
         // Handle login logic here
         console.log("Logging in with:", { usernameOrEmail, password });
+        // Persist a simple user for header display
+        setCurrentUser({
+          id: 'user-' + Date.now(),
+          name: usernameOrEmail,
+          email: usernameOrEmail.includes('@') ? usernameOrEmail : undefined,
+          handle: usernameOrEmail.includes('@') ? `@${usernameOrEmail.split('@')[0]}` : `@${usernameOrEmail}`,
+        });
         Alert.alert("Success", "Login successful!", [
-            { text: "OK", onPress: () => navigation.navigate("StepOne") }
+            { text: "OK", onPress: () => navigation.navigate("MainTabs") }
         ]);
     };
 
@@ -60,69 +120,14 @@ export default function Login() {
 
     const handleGoogleSignIn = async () => {
         try {
-            setLoading(true);
-            await GoogleSignin.hasPlayServices();
-            const userInfo = await GoogleSignin.signIn();
-            const user = userInfo.data?.user;
-            
-            console.log('Google User Info:', userInfo);
-            Alert.alert(
-                "Success",
-                `Welcome ${user?.name || 'User'}!`,
-                [{ text: "OK", onPress: () => navigation.navigate("StepOne") }]
-            );
-        } catch (error: any) {
-            console.error('Google Sign In Error:', error);
-            if (error.code === 'SIGN_IN_CANCELLED') {
-                Alert.alert("Cancelled", "Sign in was cancelled");
-            } else if (error.code === 'IN_PROGRESS') {
-                Alert.alert("In Progress", "Sign in is already in progress");
-            } else if (error.code === 'PLAY_SERVICES_NOT_AVAILABLE') {
-                Alert.alert("Error", "Play services not available");
-            } else {
-                Alert.alert("Error", "Failed to sign in with Google");
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleFacebookSignIn = async () => {
-        try {
-            setLoading(true);
-            const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
-            
-            if (result.isCancelled) {
-                Alert.alert("Cancelled", "Facebook login was cancelled");
-            } else {
-                const data = await AccessToken.getCurrentAccessToken();
-                
-                if (!data) {
-                    Alert.alert("Error", "Failed to get Facebook access token");
-                    return;
-                }
-
-                console.log('Facebook Access Token:', data.accessToken.toString());
-                
-                // Fetch user info
-                const response = await fetch(
-                    `https://graph.facebook.com/me?access_token=${data.accessToken}&fields=id,name,email,picture.type(large)`
-                );
-                const userInfo = await response.json();
-                
-                console.log('Facebook User Info:', userInfo);
-                Alert.alert(
-                    "Success",
-                    `Welcome ${userInfo.name || 'User'}!`,
-                    [{ text: "OK", onPress: () => navigation.navigate("StepOne") }]
-                );
-            }
-        } catch (error) {
-            console.error('Facebook Sign In Error:', error);
-            Alert.alert("Error", "Failed to sign in with Facebook");
-        } finally {
-            setLoading(false);
-        }
+    setLoading(true);
+    await promptAsync();
+  } catch (error) {
+    console.error('Google Sign In Error:', error);
+    Alert.alert("Error", "Failed to sign in with Google");
+  } finally {
+    setLoading(false);
+  }
     };
 
     return (
@@ -219,17 +224,6 @@ export default function Login() {
                                 <Ionicons name="logo-google" size={24} color="#DB4437" />
                                 <Text className="text-base font-medium" style={{ color: '#0D47A1' }}>
                                     Continue with Google
-                                </Text>
-                            </TouchableOpacity>
-
-                            {/* Facebook Button */}
-                            <TouchableOpacity
-                                onPress={handleFacebookSignIn}
-                                className="h-14 border border-gray-300 rounded-xl flex-row items-center justify-center gap-3 bg-white"
-                            >
-                                <Ionicons name="logo-facebook" size={24} color="#1877F2" />
-                                <Text className="text-base font-medium" style={{ color: '#0D47A1' }}>
-                                    Continue with Facebook
                                 </Text>
                             </TouchableOpacity>
                         </View>

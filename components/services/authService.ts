@@ -23,6 +23,8 @@ export interface AuthResponse {
 export const initializeGoogleSignIn = () => {
   GoogleSignin.configure({
     webClientId: config.googleWebClientId,
+    offlineAccess: true,
+    forceCodeForRefreshToken: true,
   });
 };
 

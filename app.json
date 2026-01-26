@@ -1,5 +1,6 @@
 {
   "expo": {
+    "owner": "myathtoo",
     "name": "amigo-app",
     "slug": "amigo-app",
     "version": "1.0.0",
@@ -14,7 +15,25 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.htayhtaythwe.amigoapp"
+      "bundleIdentifier": "com.myathtoo.amigo-app",
+      "scheme": "amigo-app",
+      "infoPlist": {
+        "SKAdNetworkItems": [
+          {
+            "SKAdNetworkIdentifier": "v9wttpbfk9.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "n38lu8286q.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "v9wttpbfk9.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "n38lu8286q.skadnetwork"
+          }
+        ],
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -23,32 +42,27 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.htayhtaythwe.amigoapp"
+      "package": "com.myathtoo.amigoapp",
+      "permissions": [
+        "android.permission.INTERNET"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-router",
-      "expo-font",
-      [
-        "react-native-fbsdk-next",
-        {
-          "appID": "YOUR_FACEBOOK_APP_ID",
-          "clientToken": "YOUR_FACEBOOK_CLIENT_TOKEN",
-          "displayName": "Amigo",
-          "scheme": "fbYOUR_FACEBOOK_APP_ID"
-        }
-      ]
-    ],
+    "scheme": "amigoapp",
     "extra": {
-      "GOOGLE_WEB_CLIENT_ID": "YOUR_GOOGLE_WEB_CLIENT_ID.apps.googleusercontent.com",
-      "FACEBOOK_APP_ID": "YOUR_FACEBOOK_APP_ID",
-      "FACEBOOK_CLIENT_TOKEN": "YOUR_FACEBOOK_CLIENT_TOKEN",
-      "FACEBOOK_DISPLAY_NAME": "Amigo",
+      "GOOGLE_WEB_CLIENT_ID": "848827810289-5u6on5fjtlimkommanfit6j451f7mhja.apps.googleusercontent.com",
       "API_BASE_URL": "http://localhost:3000/api",
       "APP_NAME": "Amigo",
-      "APP_VERSION": "1.0.0"
-    }
+      "APP_VERSION": "1.0.0",
+      "router": {},
+      "eas": {
+        "projectId": "f8456416-6971-433a-bc28-22d6c571d2b1"
+      }
+    },
+    "plugins": [
+      "@react-native-google-signin/google-signin"
+    ]
   }
 }

@@ -24,7 +24,9 @@ interface EnvConfig {
 
 // Default values (for development/testing)
 const defaultConfig: EnvConfig = {
-  googleWebClientId: 'YOUR_GOOGLE_WEB_CLIENT_ID.apps.googleusercontent.com',
+  googleWebClientId: '848827810289-5u6on5fjtlimkommanfit6j451f7mhja.apps.googleusercontent.com',
+  googleAndroidClientId: '848827810289-lvkbqi48kunbt18jh1t2a0qhm22ip1a4.apps.googleusercontent.com',
+  googleIosClientId: '848827810289-1kuorgf5pep2nabj8g8stmoti3rnkprq.apps.googleusercontent.com',
   facebookAppId: 'YOUR_FACEBOOK_APP_ID',
   facebookClientToken: 'YOUR_FACEBOOK_CLIENT_TOKEN',
   facebookDisplayName: 'Amigo',
@@ -39,9 +41,9 @@ const getEnvConfig = (): EnvConfig => {
   const extra = Constants.expoConfig?.extra || {};
   
   return {
-    googleWebClientId: extra.GOOGLE_WEB_CLIENT_ID || defaultConfig.googleWebClientId,
-    googleAndroidClientId: extra.GOOGLE_ANDROID_CLIENT_ID,
-    googleIosClientId: extra.GOOGLE_IOS_CLIENT_ID,
+    googleWebClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || extra.GOOGLE_WEB_CLIENT_ID || defaultConfig.googleWebClientId,
+    googleAndroidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID || extra.GOOGLE_ANDROID_CLIENT_ID || defaultConfig.googleAndroidClientId,
+    googleIosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || extra.GOOGLE_IOS_CLIENT_ID || defaultConfig.googleIosClientId,
     facebookAppId: extra.FACEBOOK_APP_ID || defaultConfig.facebookAppId,
     facebookClientToken: extra.FACEBOOK_CLIENT_TOKEN || defaultConfig.facebookClientToken,
     facebookDisplayName: extra.FACEBOOK_DISPLAY_NAME || defaultConfig.facebookDisplayName,
