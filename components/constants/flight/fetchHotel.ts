@@ -10,7 +10,7 @@ export async function fetchHotels(trip: TripState) {
       {
         params: {
           destination: trip.destination,    
-          checkIn: trip?.checkIn || trpip.from ,           
+          checkIn: trip?.checkIn || trip.from ,           
           checkOut: trip?.checkOut || trip.to ,          
           currency: trip.currency ,
         },
