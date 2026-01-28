@@ -75,7 +75,7 @@ export default function CollapsibleTripHeader({ scrollY, setEditMode, editMode, 
                 <View className="flex flex-row items-center justify-between w-full px-0 mb-2">
                     <View className="flex flex-row gap-3 px-7">
                         <Fontisto name="flag" size={24} color="#0D47A1" />
-                        <Text className="text-xl font-semibold ">China</Text>
+                        <Text className="text-xl font-semibold ">{tripSummary?.find(item => item.key === "destination")?.value || ""}</Text>
                     </View>
 
 

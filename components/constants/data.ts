@@ -143,3 +143,140 @@ export const data = {
         ]
     }
 };
+
+export const planData = {
+    "trip_plan": {
+    "trip_id": "BKK-DOM-2026-001",
+    "destination": "Bangkok",
+    "nationality": "Thai",
+    "travel_type": "domestic",
+    "duration_days": 2,
+    "budget_limit_thb": 13000,
+    "from": "2026-02-02",
+    "to": "2026-02-03",
+    "people": "solo",
+    "userPrompt": "Domestic trip to Bangkok for a Thai solo traveler.",
+    "currency": "THB",
+    "visa_requirements": {
+      "visa_free": true,
+      "visa_type": "None",
+      "details": "Thai citizens do not require a visa for domestic travel within Thailand. Identification card is sufficient for check-in."
+    },
+    "flights": [
+      {
+        "airline": "Thai AirAsia",
+        "airline_logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/AirAsia_Logo.svg/512px-AirAsia_Logo.svg.png",
+        "flight_number": "FD3438",
+        "departure_airport": "CNX",
+        "arrival_airport": "DMK",
+        "departure_time": "2026-02-02T08:20:00",
+        "arrival_time": "2026-02-02T09:35:00",
+        "cost_thb": 1450
+      },
+      {
+        "airline": "Thai AirAsia",
+        "airline_logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/AirAsia_Logo.svg/512px-AirAsia_Logo.svg.png",
+        "flight_number": "FD3431",
+        "departure_airport": "DMK",
+        "arrival_airport": "CNX",
+        "departure_time": "2026-02-03T20:50:00",
+        "arrival_time": "2026-02-03T22:05:00",
+        "cost_thb": 1600
+      }
+    ],
+    "accommodation": {
+      "hotel_name": "Riva Surya Bangkok",
+      "address": "23 Phra Athit Rd, Phra Borom Maha Ratchawang, Phra Nakhon, Bangkok 10200, Thailand",
+      "star_rating": 4,
+      "total_cost_thb": 4800,
+      "check_in": "2026-02-02",
+      "check_out": "2026-02-03",
+      "amenities": [
+        "Riverside View",
+        "Outdoor Pool",
+        "Free Wi-Fi",
+        "Fitness Center"
+      ],
+      "hotel_photos": [
+        "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb",
+        "https://images.unsplash.com/photo-1571896349842-33c89424de2d"
+      ]
+    },
+    "itinerary": [
+      {
+        "day": 1,
+        "theme": "Riverside Heritage & Culture",
+        "youtube_query": "Bangkok Riverside travel guide 2026",
+        "activities": [
+          {
+            "time": "11:00",
+            "activity_name": "The Grand Palace & Wat Phra Kaew",
+            "description": "Visit the historic home of the Thai King and the Emerald Buddha.",
+            "cost_thb": 500,
+            "activity_photos": [
+              "https://images.unsplash.com/photo-1562678662-f05d0ef9765b",
+              "https://images.unsplash.com/photo-1598970605070-a38a6ccd3a2d"
+            ]
+          },
+          {
+            "time": "15:00",
+            "activity_name": "Wat Arun (Temple of Dawn)",
+            "description": "Cross the river to see the iconic porcelain-encrusted spire.",
+            "cost_thb": 100,
+            "activity_photos": [
+              "https://images.unsplash.com/photo-1528181304800-2f140819ad9c"
+            ]
+          },
+          {
+            "time": "19:00",
+            "activity_name": "Dinner at Phra Athit Road",
+            "description": "Enjoy local street food and boutique restaurants along the river.",
+            "cost_thb": 600,
+            "activity_photos": [
+              "https://images.unsplash.com/photo-1559339352-11d035aa65de"
+            ]
+          }
+        ]
+      },
+      {
+        "day": 2,
+        "theme": "Modern Bangkok & Shopping",
+        "youtube_query": "Siam Paragon shopping vlog Bangkok",
+        "activities": [
+          {
+            "time": "10:00",
+            "activity_name": "Jim Thompson House Museum",
+            "description": "Explore the beautiful teak house and art collection of the 'Silk King'.",
+            "cost_thb": 200,
+            "activity_photos": [
+              "https://images.unsplash.com/photo-1583417319070-4a69db38a482"
+            ]
+          },
+          {
+            "time": "13:00",
+            "activity_name": "Shopping at Siam Square & Paragon",
+            "description": "Lunch and shopping in Bangkok's premier fashion district.",
+            "cost_thb": 1500,
+            "activity_photos": [
+              "https://images.unsplash.com/photo-1519167758481-83f550bb49b3",
+              "https://images.unsplash.com/photo-1565008447742-97f6f38c985c"
+            ]
+          },
+          {
+            "time": "17:00",
+            "activity_name": "Erawan Shrine Visit",
+            "description": "Pay respects at the famous Hindu shrine in the heart of the city.",
+            "cost_thb": 0,
+            "activity_photos": [
+              "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "id" : 123456,
+  "created_at": "2024-06-15T10:00:00Z"
+}
+
+

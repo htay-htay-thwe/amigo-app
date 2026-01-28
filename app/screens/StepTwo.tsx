@@ -18,6 +18,8 @@ export default function StepTwo() {
     const setDates = useTripStore((s) => s.setDates);
     const storeFrom = useTripStore((s) => s.from);
     const storeTo = useTripStore((s) => s.to);
+    const origin = useTripStore((s) => s.origin);
+    console.log('origin',origin);
 
     const [from, setFrom] = useState(storeFrom);
     const [to, setTo] = useState(storeTo);
@@ -105,7 +107,7 @@ export default function StepTwo() {
                                         onChange={setFromTo}
                                     />
                                     {error !== "" && (
-                                        <Text className="text-red-500 mt-2 px-4">{error}</Text>
+                                        <Text className="px-4 mt-2 text-red-500">{error}</Text>
                                     )}
                                 </View>
 

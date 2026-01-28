@@ -23,6 +23,7 @@ export type VisaRequirements = {
   visa_free: boolean;
   visa_type: string;
   details: string;
+  visa_free_days: number;
 };
 
 export type FlightType = "Departure" | "Return";
@@ -54,12 +55,13 @@ export type Accommodation = {
   hotel_photos: string[];
 };
 
+
 export type UserInput = {
   itinerary: ItineraryDay[];
-  destination: string;
+     destination: string;
   from: string;
   to: string;
-  travelType: string;
+  travel_type: string;
   people: string;
   budget_limit_thb: string;
   currency: string;
@@ -67,12 +69,33 @@ export type UserInput = {
   travelPlan: string;
 };
 
+export type CheckProgress = {
+  departureFlight: boolean;
+  returnFlight: boolean;
+  accommodation: boolean;
+  activities: { [dayIndex: number]: { [activityIndex: number]: boolean } };
+};
+
 export type SavedTrip = {
   id: string;
   userId: number;
   createdAt: number;
   planData: any; 
+  checkProgress?: CheckProgress;
   trip_plan: {
+    destination: string;
+    destinationAirport?: string;
+    from: string;
+    to: string;
+    travel_type: string;
+    travelType: string;
+    people: string;
+    budget: string;
+    budget_limit_thb: string;
+    currency: string;
+    nationality: string;
+    travelPlan: string;
+    origin?: string;
     itinerary: ItineraryDay[];
     visa_requirements: VisaRequirements;
     flights: any;

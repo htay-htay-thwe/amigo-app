@@ -14,6 +14,7 @@ import { useNavigation } from "expo-router";
 import { data, itineraryData } from "../../components/constants/data";
 import { usePlanStore } from "../../components/store/plan.store";
 import { useTripStore } from "../../components/store/trip.store";
+import { fetchHotels } from "../../components/constants/flight/fetchHotel";
 
 const messages = [
     "Our system is planning your trip ✈️",
@@ -29,9 +30,10 @@ export default function TripPlan() {
     const [editMode, setEditMode] = useState(false);
     const [err, setErr] = useState("");
     const navigation = useNavigation();
-    const { loading, planData, error } = usePlanStore();
+    const { loading, error } = usePlanStore();
     const [loadingText, setLoadingText] = useState(messages[0]);
     const setSaveTrip = useTripStore((s) => s.setSaveTrip);
+    const planData = usePlanStore((s) => s.planData);
     const trip = useTripStore.getState();
 
     const [tripSummary, setTripSummary] = useState<TripSummaryItem[]>([
@@ -66,7 +68,6 @@ export default function TripPlan() {
         );
     }
 
-
     if (error) {
         return (
             <View className="items-center justify-center flex-1 p-2">
@@ -82,7 +83,6 @@ export default function TripPlan() {
             setErr("Something went wrong, please try again.");
             return;
         }
-
         setSaveTrip({
             ...planData,
             id: Math.random().toString(36).slice(2, 10),
@@ -96,13 +96,13 @@ export default function TripPlan() {
     };
 
     const cancelTrip = () => {
-
         usePlanStore.getState().clearPlanData();
         navigation.navigate("MainTabs", {
             screen: "MyPlan",
         });
 
     };
+
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50">

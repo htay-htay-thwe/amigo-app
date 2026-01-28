@@ -11,7 +11,9 @@ type Props = {
   setOpen?: (open: boolean) => void;
   editable?: boolean;
   checkable?: boolean;
-  setEditPayload?: (payload: { title: string; data: any } | null) => void;
+  checkState?: any;
+  onActivityCheck?: (dayIndex: number, activityIndex: number, checked: boolean) => void;
+  setEditPayload?: (payload: { title: string; data: any; type: "flight" | "accommodation" | "itinerary"} | null) => void;
 };
 
 export default function ItineraryTimeline({
@@ -21,22 +23,27 @@ export default function ItineraryTimeline({
   setOpen,
   editable,
   checkable,
+  checkState,
+  onActivityCheck,
   setEditPayload,
 }: Props) {
   return (
     <AnimatedFlatList
       data={itinerary}
-      keyExtractor={(item: { day: number }) => item.day.toString()}
-      renderItem={({ item }) => (
+      keyExtractor={(item: any) => item.day.toString()}
+      renderItem={({ item, index }: any) => (
         <DaySection
           day={item}
-          setOpen={setOpen}
+          dayIndex={index}
+          setOpen={setOpen as any}
           editable={editable}
           checkable={checkable}
+          checkState={checkState}
+          onActivityCheck={onActivityCheck}
           setEditPayload={setEditPayload}
         />
       )}
-      ListHeaderComponent={header}
+      ListHeaderComponent={header as any}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
         paddingTop: 5,

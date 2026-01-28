@@ -1,7 +1,6 @@
 import { StatusBar, Text, View, TextInput, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback } from "react-native";
 import Head from "../DataForm/Head";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Input from "../../components/ui/Input";
 import StepIndicatorComponent from "../../components/ui/StepIndicatorComponent";
 import Button from "../../components/ui/Button";
 import { useNavigation } from "@react-navigation/native";
@@ -9,12 +8,15 @@ import { useState } from "react";
 import { Keyboard } from "react-native";
 import { useTripStore } from "../../components/store/trip.store";
 import clsx from "clsx";
-import axios from "axios"
-import { tripPrompt } from "../../components/constants/firstSystemPrompt";
+import { selectLogisticsPrompt, itineraryPrompt, visaPrompt } from "../../components/constants/firstSystemPrompt";
 import { usePlanStore } from "../../components/store/plan.store";
+import { gemini } from "../../components/constants/api";
+import { fetchFlights } from "../../components/constants/flight/fetchFlights";
+import { fetchHotels } from "../../components/constants/flight/fetchHotel";
+import { itineraryWithYoutube } from "../../components/constants/flight/youtube";
 
 export default function StepSix() {
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
     const [userPrompt, setUserPrompt] = useState("");
     const [error, setError] = useState("");
     const setUserPromptsStore = useTripStore((s) => s.setUserPrompts);
@@ -25,15 +27,6 @@ export default function StepSix() {
     const setErr = usePlanStore.getState().setErr;
     const trip = useTripStore.getState();
 
-    /* -------------------- GEMINI CLIENT -------------------- */
-    const gemini = axios.create({
-        baseURL: "https://generativelanguage.googleapis.com/v1beta",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-
-    /* -------------------- JSON EXTRACTOR (CRITICAL) -------------------- */
     function extractJson(text: string) {
         const start = text.indexOf("{");
         if (start === -1) {
@@ -60,120 +53,133 @@ export default function StepSix() {
         return text.slice(start, end + 1);
     }
 
-
-    /* -------------------- MAIN FUNCTION -------------------- */
     const planTripFunc = async () => {
         try {
             startPlanning();
 
-            /* ---------- 1. CALL GEMINI ---------- */
-            const response = await retry(
-                () =>
-                    gemini.post(
-                        `/models/gemini-3-flash-preview:generateContent`,
-                        tripPrompt(trip),
-                        { params: { key: GEMINI_API_KEY } }
-                    ),
-                3
+            const outboundFlights = await fetchFlights({
+                origin: trip.origin,                      // Origin airport code (e.g., RGN)
+                destination: trip.destinationAirport,     // Destination airport code (e.g., BKK)
+                date: trip.from,
+                people: Number(trip.people),
+                currency: trip.currency,
+            });
+
+            const returnFlights = await fetchFlights({
+                origin: trip.destinationAirport,          // Return from destination airport
+                destination: trip.origin,                 // Back to origin airport
+                date: trip.to,
+                people: Number(trip.people),
+                currency: trip.currency,
+            });
+
+            const hotels = await fetchHotels(trip);
+
+            const visaRes = await gemini.post(
+                "/models/gemini-2.5-flash:generateContent",
+                visaPrompt(trip),
+                { params: { key: GEMINI_API_KEY } }
+            );
+            const visaJson = JSON.parse(
+                extractJson(visaRes.data.candidates[0].content.parts[0].text)
+            );
+            console.log('visaJson', visaJson);
+
+            const logisticsRes = await gemini.post(
+                "/models/gemini-2.5-flash:generateContent",
+                selectLogisticsPrompt(outboundFlights, returnFlights, hotels),
+                { params: { key: GEMINI_API_KEY } }
             );
 
-            const jsonText = await retry(
-                async () => {
-                    const candidate = response.data?.candidates?.[0];
-                    const rawText = candidate?.content?.parts?.[0]?.text;
-
-                    if (!rawText) {
-                        throw new Error("Empty Gemini text");
-                    }
-
-                    return extractJson(rawText);
-                },
-                2
-            );
-            console.log("📄 Extracted JSON text:", jsonText);
-
-            let tripJson: any;
-            try {
-                tripJson = JSON.parse(jsonText);
-            } catch (err) {
-                console.error("❌ JSON PARSE FAILED:", jsonText);
-                throw err;
+            console.log('logisticsRes raw:', JSON.stringify(logisticsRes.data, null, 2));
+            
+            if (!logisticsRes.data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+                throw new Error("Invalid logistics response from Gemini");
             }
 
-            /* ---------- 3. NORMALIZE ITINERARY ---------- */
-            const days = Array.isArray(tripJson?.trip_plan?.itinerary)
-                ? tripJson.trip_plan.itinerary
-                : [];
+            const logisticsJson = JSON.parse(
+                extractJson(logisticsRes.data.candidates[0].content.parts[0].text)
+            );
+            console.log('logisticsJson', logisticsJson);
 
-            console.log("📅 Itinerary days:", days.length);
-
-            /* ---------- 4. ENRICH WITH YOUTUBE ---------- */
-            const enrichedDays = await Promise.all(
-                days.map(async (day: any, index: number) => {
-                    if (!day.youtube_query) {
-                        console.warn(`⚠️ Day ${index + 1} missing youtube_query`);
-                        return day;
-                    }
-
-                    const ytUrl =
-                        "https://www.googleapis.com/youtube/v3/search?" +
-                        "part=snippet&" +
-                        "q=" + encodeURIComponent(day.youtube_query) + "&" +
-                        "type=video&" +
-                        "maxResults=1&" +
-                        "order=relevance&" +
-                        "safeSearch=strict&" +
-                        "key=" + YT_KEY;
-
-                    try {
-                        const yData = await retry(
-                            async () => {
-                                const yRes = await fetch(ytUrl);
-                                if (!yRes.ok) throw new Error("YT fetch failed");
-                                return yRes.json();
-                            },
-                            2,
-                            500
-                        );
-
-                        const videoId = yData?.items?.[0]?.id?.videoId;
-                        console.log("🎥 YouTube videoId for Day", index + 1, ":", videoId);
-
-                        if (!videoId) return day;
-
-                        return {
-                            ...day,
-                            youtube_vlog_link: `https://www.youtube.com/watch?v=${videoId}`,
-                        };
-                    } catch (err) {
-                        console.warn("⚠️ YouTube fetch failed:", err);
-                        return day;
-                    }
-                })
+            if (
+                !logisticsJson.selected_outbound_flight ||
+                !logisticsJson.selected_return_flight ||
+                !logisticsJson.selected_hotel
+            ) {
+                throw new Error("No valid logistics selected");
+            }
+            
+            const itineraryRes = await gemini.post(
+                "/models/gemini-2.5-flash:generateContent",
+                itineraryPrompt(
+                    trip,
+                    logisticsJson.selected_outbound_flight,
+                    logisticsJson.selected_hotel
+                ),
+                { params: { key: GEMINI_API_KEY } }
             );
 
-            /* ---------- 5. BUILD FINAL PLAN ---------- */
+            console.log('itineraryRes raw:', JSON.stringify(itineraryRes.data, null, 2));
+            
+            if (!itineraryRes.data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+                throw new Error("Invalid itinerary response from Gemini");
+            }
+
+            const itineraryJson = JSON.parse(
+                extractJson(itineraryRes.data.candidates[0].content.parts[0].text)
+            );
+
+            console.log('itineraryJson', itineraryJson);
+            const enrichedItinerary = await itineraryWithYoutube(
+                itineraryJson.itinerary,
+                YT_KEY
+            );
+
             const finalPlan = {
-                ...tripJson,
                 trip_plan: {
-                    ...tripJson.trip_plan,
-                    itinerary: enrichedDays,
+                    trip_id: `AUTO-${Date.now()}`,
+                    origin: trip.origin,
+                    destination: trip.destination,
+                    destinationAirport: trip.destinationAirport,
+                    nationality: trip.nationality,
+                    travel_type: trip.travelType,
+                    visa_requirements: visaJson.visa_requirements,
+                    duration_days:
+                        Math.ceil(
+                            (new Date(trip.to).getTime() -
+                                new Date(trip.from).getTime()) /
+                            (1000 * 60 * 60 * 24)
+                        ) + 1,
+                    budget_limit_thb: trip.amount,
+                    from: trip.from,
+                    to: trip.to,
+                    people: trip.people,
+                    userPrompt: trip.userPrompts,
+                    currency: trip.currency,
+                    flights: [
+                        logisticsJson.selected_outbound_flight,
+                        logisticsJson.selected_return_flight,
+                    ],
+
+                    accommodation: logisticsJson.selected_hotel,
+
+                    itinerary: enrichedItinerary,
                 },
             };
-            /* ---------- 6. SET STATE ONCE ---------- */
+
             setPlanData(finalPlan);
-            console.log("✅ Final trip plan ready:", finalPlan);
+            console.log("Trip planning completed:", finalPlan);
 
         } catch (error: any) {
-            console.error(
-                "❌ Trip planning failed:",
-                error?.response?.data || error.message
-            );
-            setErr(error?.response?.data || error.message);
+            console.error("❌ Trip planning failed:", error.message || "Unknown error");
+            console.error("Error details:", error);
+            console.error("Error stack:", error.stack);
+            setErr(error.message || "Something went wrong");
         }
     };
 
-    /* -------------------- NAVIGATION HANDLER -------------------- */
+
     const onNext = () => {
         if (userPrompt.trim() === "") {
             setError("* required");

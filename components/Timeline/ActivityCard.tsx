@@ -11,14 +11,22 @@ type Props = {
   setOpen?: (open: boolean) => void;
   editable?: boolean;
   checkable?: boolean;
+  isChecked?: boolean;
+  onCheck?: (checked: boolean) => void;
   day?: any;
+  dayIndex?: number;
+  activityIndex?: number;
   setEditPayload?: (payload: { title: string; data: any; type: "flight" | "accommodation" | "itinerary" } | null) => void;
 };
 
 
-export default function ActivityCard({ day, activity, youtubeLink, setOpen, checkable, editable, setEditPayload }: Props) {
-  const [checked, setChecked] = useState(false);
+export default function ActivityCard({ day, dayIndex, activityIndex, activity, youtubeLink, setOpen, checkable, isChecked, onCheck, editable, setEditPayload }: Props) {
   const modalContent = (day: number, time: string) => {
+console.log("setEditPayload exists?", typeof setEditPayload);
+  if (typeof setEditPayload !== "function") {
+    throw new Error("❌ setEditPayload is NOT a function");
+  }
+
     setOpen && setOpen(true);
     setEditPayload && setEditPayload({
       type: "itinerary",
@@ -29,7 +37,7 @@ export default function ActivityCard({ day, activity, youtubeLink, setOpen, chec
   return (
     <View className={clsx(
       "flex-1 p-4 bg-white border border-gray-200 shadow-sm rounded-2xl",
-      checked === true && "bg-blue-50 border border-blue-300 opacity-50"
+      isChecked === true && "bg-blue-50 border border-blue-300 opacity-50"
     )}>
 
       {/* Image Carousel */}
@@ -72,12 +80,12 @@ export default function ActivityCard({ day, activity, youtubeLink, setOpen, chec
             <View className="flex justify-end">
               <BouncyCheckbox
                 size={22}
-                isChecked={checked}
+                isChecked={isChecked || false}
                 fillColor="#2563eb"
                 unFillColor="#fff"
                 iconStyle={{ borderColor: "#2563eb" }}
                 innerIconStyle={{ borderWidth: 2 }}
-                onPress={setChecked}
+                onPress={(checked) => onCheck?.(checked)}
               />
             </View>
           }

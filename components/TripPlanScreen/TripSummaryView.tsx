@@ -5,14 +5,14 @@ import { UIManager } from "react-native";
 import { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 type Props = {
-    destination: string;
-    from: string;
-    to: string;
-    travelType: string;
-    people: string;
-    budget: string;
-    nationality: string;
-    travelPlan: string;
+    destination?: string;
+    from?: string;
+    to?: string;
+    travelType?: string;
+    people?: string;
+    budget?: string;
+    nationality?: string;
+    travelPlan?: string;
     show?: boolean;
     setShow?: (show: boolean) => void;
 };
@@ -43,7 +43,7 @@ export default function TripSummaryView({
 
     const toggle = () => {
         height.value = height.value === 0 ? withTiming(200) : withTiming(0);
-        setShow(!show);
+        setShow?.(!show);
     };
 
     return (
@@ -83,7 +83,7 @@ export default function TripSummaryView({
 }
 
 
-function SummaryMini({ label, value }: { label: string; value: string }) {
+function SummaryMini({ label, value }: { label: string; value?: string }) {
     return (
         <View className="flex-1">
             <Text className="text-sm text-gray-500">{label}</Text>

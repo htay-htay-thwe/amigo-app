@@ -5,10 +5,13 @@ type Props = {
   setOpen?: (open: boolean) => void;
   editable?: boolean;
   checkable?: boolean;
-  setEditablePayload?: (payload: { title: string; data: any } | null) => void;
+  dayIndex?: number;
+  checkState?: any;
+  onActivityCheck?: (dayIndex: number, activityIndex: number, checked: boolean) => void;
+  setEditPayload?: (payload: { title: string; data: any; type: "flight" | "accommodation" | "itinerary"} | null) => void;
 };
 
-export default function DaySection({ day, setOpen, editable, checkable, setEditablePayload }: { day: any; setOpen: (open: boolean) => void } & Props) {
+export default function DaySection({ day, dayIndex, setOpen, editable, checkable, checkState, onActivityCheck, setEditPayload }: { day: any; dayIndex?: number; setOpen: (open: boolean) => void } & Props) {
   return (
     <View className="p-3 mb-1">
       {/* Day Header */}
@@ -35,13 +38,17 @@ export default function DaySection({ day, setOpen, editable, checkable, setEdita
           </View>
 
           <ActivityCard
-            setEditPayload={setEditablePayload}
+            setEditPayload={setEditPayload}
             day={day}
+            dayIndex={dayIndex}
+            activityIndex={index}
             checkable={checkable}
             editable={editable}
             setOpen={setOpen}
             activity={activity}
-            youtubeLink={day.youtube_vlog_link}
+            isChecked={checkState?.activities?.[dayIndex || 0]?.[index]}
+            onCheck={(checked) => onActivityCheck?.(dayIndex || 0, index, checked)}
+            youtubeLink={activity.youtube_vlog_link}
           />
         </View>
       ))}

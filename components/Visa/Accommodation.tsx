@@ -13,14 +13,14 @@ type Props = {
   accommodation: Accommodation;
   editable?: boolean;
   checkable?: boolean;
+  isChecked?: boolean;
+  onCheck?: (checked: boolean) => void;
   setOpen?: (open: boolean) => void;
   setEditPayload?: (payload: { title: string; data: any; type: "flight" | "accommodation" | "itinerary" } | null) => void;
 };
 
-export default function AccommodationCard({ accommodation, editable, checkable, setOpen, setEditPayload }: Props) {
+export default function AccommodationCard({ accommodation, editable, checkable, isChecked, onCheck, setOpen, setEditPayload }: Props) {
 
-  const [checked, setChecked] = useState(false);
-  
   const modalContent = (accommodation: string) => {
     setOpen && setOpen(true);
     setEditPayload && setEditPayload({
@@ -32,7 +32,7 @@ export default function AccommodationCard({ accommodation, editable, checkable, 
 
   return (
     <View className={clsx("p-4 bg-white shadow-sm rounded-2xl",
-      checked === true && "bg-blue-50 border border-blue-300 opacity-50"
+      isChecked === true && "bg-blue-50 border border-blue-300 opacity-50"
     )}>
       <View className="flex-row items-center gap-2 mb-1">
         <View>
@@ -51,12 +51,12 @@ export default function AccommodationCard({ accommodation, editable, checkable, 
             <View className="flex justify-end">
               <BouncyCheckbox
                 size={22}
-                isChecked={checked}
+                isChecked={isChecked || false}
                 fillColor="#2563eb"
                 unFillColor="#fff"
                 iconStyle={{ borderColor: "#2563eb" }}
                 innerIconStyle={{ borderWidth: 2 }}
-                onPress={setChecked}
+                onPress={(checked) => onCheck?.(checked)}
               />
             </View>
           }

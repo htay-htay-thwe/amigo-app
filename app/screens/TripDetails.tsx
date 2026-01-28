@@ -3,19 +3,20 @@ import VisaCard from "../../components/Visa/VisaCard";
 import FlightsSection from "../../components/Visa/FlightsSection";
 import AccommodationCard from "../../components/Visa/Accommodation";
 import ItineraryTimeline from "../../components/Timeline/ItineraryTimeline";
-import { data, itineraryData } from "../../components/constants/data";
 import { useRoute } from '@react-navigation/native';
 import { useTripStore } from "../../components/store/trip.store";
 
 export default function TripDetails() {
     const route = useRoute<any>();
     const { tripId } = route.params;
-    console.log('tripId', tripId);
 
     const savedTrips = useTripStore((s) => s.saveTrip);
 
-    const trip = savedTrips.find((t) => t.id === tripId);
-    if (!trip) return null;
+    const trip = savedTrips.find((t) => t?.id === tripId);
+    console.log('trip', trip);
+    
+    if (!trip || !trip.trip_plan) return null;
+    
     return (
         <View className="flex-1">
             <ItineraryTimeline

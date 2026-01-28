@@ -7,18 +7,19 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useState } from "react";
 
 type Props = {
-  flight: string[];
+  flight: any;
   label: "Departure" | "Return";
   condition?: "details" | "update";
   editable?: boolean;
   checkable?: boolean;
+  isChecked?: boolean;
+  onCheck?: (checked: boolean) => void;
   setEditPayload?: (payload: { title: string; data: any; type: "flight" | "accommodation" | "itinerary" } | null) => void;
   setOpen?: (open: boolean) => void;
 };
 
-export default function FlightCard({ flight, label, condition, editable, checkable, setEditPayload, setOpen }: Props) {
+export default function FlightCard({ flight, label, condition, editable, checkable, isChecked, onCheck, setEditPayload, setOpen }: Props) {
 
-  const [checked, setChecked] = useState(false);
   const modalContent = (flight: string) => {
     setOpen && setOpen(true);
     setEditPayload && setEditPayload({
@@ -32,7 +33,7 @@ export default function FlightCard({ flight, label, condition, editable, checkab
     <View className={clsx("p-4 mb-3  shadow-sm rounded-2xl",
       condition === "details" && "bg-white",
       condition === "update" && "bg-blue-100",
-      checked === true && "bg-blue-50 border border-blue-300 opacity-50"
+      isChecked === true && "bg-blue-50 border border-blue-300 opacity-50"
     )}>
 
       {/* HEADER */}
@@ -63,12 +64,12 @@ export default function FlightCard({ flight, label, condition, editable, checkab
            <View className="flex justify-end">
              <BouncyCheckbox
               size={22}
-              isChecked={checked}
+              isChecked={isChecked || false}
               fillColor="#2563eb"
               unFillColor="#fff"
               iconStyle={{ borderColor: "#2563eb" }}
               innerIconStyle={{ borderWidth: 2 }}
-              onPress={setChecked}
+              onPress={(checked) => onCheck?.(checked)}
             />
            </View>
           }
