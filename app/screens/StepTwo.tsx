@@ -121,6 +121,7 @@ export default function StepTwo() {
                             </View>
                         </SafeAreaView>
                     </ScrollView>
+
                 </View>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

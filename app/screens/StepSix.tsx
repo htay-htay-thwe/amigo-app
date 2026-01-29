@@ -248,10 +248,10 @@ travel style, moderate budget, and must-see temples, heritage sites, street mark
                     </ScrollView>
                 </View>
             </TouchableWithoutFeedback>
+
         </KeyboardAvoidingView>
     )
 }
-
 
 const sleep = (ms: number) =>
     new Promise(resolve => setTimeout(resolve, ms));

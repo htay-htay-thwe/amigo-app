@@ -8,7 +8,6 @@ import { useNavigation } from "@react-navigation/native";
 import { useTripStore } from "../../components/store/trip.store";
 import { useState } from "react";
 
-
 export default function StepOne() {
     const navigation = useNavigation<any>();
 
