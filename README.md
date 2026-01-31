@@ -439,12 +439,6 @@ Future enhancements planned:
 
 ---
 
-## 📸 Screenshots
-
-_Coming soon - Screenshots of the app in action_
-
----
-
 ## ⭐ Show Your Support
 
 If you find this project helpful, please give it a ⭐ on GitHub!
