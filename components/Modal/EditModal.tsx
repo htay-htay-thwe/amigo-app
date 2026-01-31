@@ -265,7 +265,7 @@ export default function EditModal({
         console.error("❌ Error in itinerary update:", error);
         console.error("Error message:", error.message);
         console.error("Error stack:", error.stack);
-        setError(error.message);
+        setError("Something went wrong!");
         return null;
       }
     }
@@ -289,7 +289,7 @@ export default function EditModal({
         "❌ Trip planning failed:",
         error?.response?.data || error.message
       );
-      setError(error?.response?.data || error.message);
+      setError("Something went wrong!");
     }
 
   }

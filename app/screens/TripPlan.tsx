@@ -71,7 +71,7 @@ export default function TripPlan() {
     if (error) {
         return (
             <View className="items-center justify-center flex-1 p-2">
-                <Text className="text-center text-red-500">{error?.error.message || error?.response?.data || error.message}</Text>
+                <Text className="text-center text-red-500">Something went wrong!</Text>
             </View>
         );
     }

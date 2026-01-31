@@ -73,7 +73,7 @@ export default function Home() {
 
       {/* Popular Destinations Section */}
       <View>
-        <View className="px-4 mb-4 mt-5 flex-row justify-between items-center">
+        <View className="flex-row items-center justify-between px-4 mt-5 mb-4">
           <Text className="text-2xl font-semibold" style={{ color: '#0D47A1' }}>
             Popular Destinations
           </Text>
@@ -145,22 +145,22 @@ export default function Home() {
 
       {/* Quick Actions Section */}
       <View className="px-4 mt-6 mb-8">
-        <Text className="text-xl font-bold mb-4" style={{ color: '#0D47A1' }}>
+        <Text className="mb-4 text-xl font-bold" style={{ color: '#0D47A1' }}>
           Quick Actions
         </Text>
         <TouchableOpacity
-          className="bg-gradient-to-r p-4 rounded-xl mb-3 flex-row items-center"
+          className="flex-row items-center p-4 mb-3 bg-gradient-to-r rounded-xl"
           style={{ backgroundColor: '#DBEAFE' }}
           onPress={() => {
             // @ts-ignore - Navigate to the root navigator first, then to Steps
-            navigation.getParent()?.navigate("Steps");
+            navigation.navigate("Steps", { screen: "StepOne" })
           }}
         >
-          <View className="bg-white p-3 rounded-full">
+          <View className="p-3 bg-white rounded-full">
             <Ionicons name="add-circle" size={24} color="#2563EB" />
           </View>
-          <View className="ml-4 flex-1">
-            <Text className="font-semibold text-base" style={{ color: '#0D47A1' }}>
+          <View className="flex-1 ml-4">
+            <Text className="text-base font-semibold" style={{ color: '#0D47A1' }}>
               Plan New Trip
             </Text>
             <Text className="text-sm" style={{ color: '#6B7280' }}>
@@ -171,15 +171,15 @@ export default function Home() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          className="bg-gradient-to-r p-4 rounded-xl flex-row items-center"
+          className="flex-row items-center p-4 bg-gradient-to-r rounded-xl"
           style={{ backgroundColor: '#DBEAFE' }}
           onPress={handleExploreNearby}
         >
-          <View className="bg-white p-3 rounded-full">
+          <View className="p-3 bg-white rounded-full">
             <Ionicons name="map" size={24} color="#2563EB" />
           </View>
-          <View className="ml-4 flex-1">
-            <Text className="font-semibold text-base" style={{ color: '#0D47A1' }}>
+          <View className="flex-1 ml-4">
+            <Text className="text-base font-semibold" style={{ color: '#0D47A1' }}>
               Explore Nearby
             </Text>
             <Text className="text-sm" style={{ color: '#6B7280' }}>
@@ -191,9 +191,9 @@ export default function Home() {
       </View>
 
       {/* Copyright Section */}
-      <View className="px-5 absolute bottom-5 left-0 right-0" >
-        <View className=" w-full  items-center border-t border-gray-200 ">
-          <View className="pt-2 pb-3 w-full items-center">
+      <View className="absolute left-0 right-0 px-5 bottom-5" >
+        <View className="items-center w-full border-t border-gray-200 ">
+          <View className="items-center w-full pt-2 pb-3">
             <Text className="text-sm text-gray-500">
               © 2026 Encrypted. All rights reserved.
             </Text>

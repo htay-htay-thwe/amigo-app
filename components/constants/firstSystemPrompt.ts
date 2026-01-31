@@ -48,7 +48,7 @@ OUTPUT:
   ],
   generationConfig: {
     temperature: 0.05,
-    maxOutputTokens: 5000
+    maxOutputTokens: 6000
   }
 });
 
@@ -112,7 +112,7 @@ OUTPUT FORMAT:
   ],
   generationConfig: {
     temperature: 0.05,
-    maxOutputTokens: 8000
+    maxOutputTokens: 11000
   }
 });
 
@@ -176,7 +176,7 @@ GUIDELINES
   ],
   generationConfig: {
     temperature: 0.05,
-    maxOutputTokens: 8000
+    maxOutputTokens: 9000
   }
 });
 
@@ -210,7 +210,7 @@ OUTPUT:
   ],
   generationConfig: {
     temperature: 0.05,
-    maxOutputTokens: 4000
+    maxOutputTokens: 6000
   }
 });
 
@@ -266,7 +266,7 @@ OUTPUT FORMAT:
   ],
   generationConfig: {
     temperature: 0.05,
-    maxOutputTokens: 6000
+    maxOutputTokens: 7000
   }
 });
 

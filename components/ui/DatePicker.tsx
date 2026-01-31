@@ -15,7 +15,7 @@ export default function DatePicker({ markedDates, onSelectDate }: Props) {
       style={{
         marginTop: -height * 0.04,
         width: width * 0.85,
-        height: height * 0.38,
+        height: height * 0.418,
         alignSelf: "center",
         transform: [{ scale: 0.9 }],
       }}

@@ -15,10 +15,10 @@ export default function Settings() {
       <View className="flex-1 px-6 pt-8">
         {/* User Info Section */}
         <View className="items-center mb-8">
-          <View className="w-20 h-20 rounded-full bg-primary items-center justify-center mb-4">
+          <View className="items-center justify-center w-20 h-20 mb-4 rounded-full bg-primary">
             <Ionicons name="person" size={40} color="white" />
           </View>
-          <Text className="text-2xl font-bold text-primary mb-1">
+          <Text className="mb-1 text-2xl font-bold text-primary">
             {user?.username || "User"}
           </Text>
           <Text className="text-base text-gray-500">
@@ -62,7 +62,7 @@ export default function Settings() {
         </View>
 
         {/* Logout Button */}
-        <View className="mt-auto mb-6">
+        <View className="mt-auto mb-14">
           <Button
             title="Logout"
             onPress={handleLogout}

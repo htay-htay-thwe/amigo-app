@@ -175,7 +175,7 @@ export default function StepSix() {
             console.error("❌ Trip planning failed:", error.message || "Unknown error");
             console.error("Error details:", error);
             console.error("Error stack:", error.stack);
-            setErr(error.message || "Something went wrong");
+            setErr("Something went wrong");
         }
     };
 

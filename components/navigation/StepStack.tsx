@@ -11,13 +11,19 @@ import Save from "../../app/screens/Save";
 import TripDetails from "../../app/screens/TripDetails";
 import TripEdit from "../../app/screens/TripEdit";
 import PlanCheck from "../../app/screens/PlanCheck";
+import GetStarted from "../../app/screens/GetStarted";
+import Login from "../../app/screens/Login";
+import Register from "../../app/screens/Register";
 
 
 const Stack = createNativeStackNavigator();
 
 export default function StepStack() {
     return (
-         <Stack.Navigator initialRouteName="StepOne" screenOptions={{ headerShown: false }}>
+         <Stack.Navigator initialRouteName="GetStarted" screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="GetStarted" component={GetStarted} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="StepOne" component={StepOne} />
             <Stack.Screen name="StepTwo" component={StepTwo} />
             <Stack.Screen name="StepThree" component={StepThree} />
