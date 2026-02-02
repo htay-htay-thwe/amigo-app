@@ -156,7 +156,7 @@ export default function EditModal({
       : changeUpdatePrompt(fetchApi, updateUserPrompt, payloadTitle);
 
     const response = await gemini.post(
-      `/models/gemini-2.5-flash:generateContent`,
+      `/models/gemini-3-flash:generateContent`,
       prompt,
       { params: { key: GEMINI_API_KEY } }
     );

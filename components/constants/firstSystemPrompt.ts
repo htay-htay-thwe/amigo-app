@@ -273,3 +273,28 @@ OUTPUT FORMAT:
 
 
 
+export  const extractJson = (text: string) => {
+        const start = text.indexOf("{");
+        if (start === -1) {
+            throw new Error("No JSON object found");
+        }
+
+        let braceCount = 0;
+        let end = -1;
+
+        for (let i = start; i < text.length; i++) {
+            if (text[i] === "{") braceCount++;
+            if (text[i] === "}") braceCount--;
+
+            if (braceCount === 0) {
+                end = i;
+                break;
+            }
+        }
+
+        if (end === -1) {
+            throw new Error("Incomplete JSON returned by Gemini (truncated)");
+        }
+
+        return text.slice(start, end + 1);
+    }
