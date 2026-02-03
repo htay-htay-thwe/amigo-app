@@ -156,7 +156,7 @@ export default function EditModal({
       : changeUpdatePrompt(fetchApi, updateUserPrompt, payloadTitle);
 
     const response = await gemini.post(
-      `/models/gemini-2.5-flash:generateContent`,
+      `/models/gemini-3-flash-preview:generateContent`,
       prompt,
       { params: { key: GEMINI_API_KEY } }
     );
@@ -310,12 +310,12 @@ export default function EditModal({
     <Modal
       isVisible={open}
       avoidKeyboard
-      backdropOpacity={0.45}
+      backdropOpacity={0.1}
       animationIn="slideInUp"
       animationOut="slideOutDown"
       coverScreen={true}
       onBackdropPress={() => setOpen(false)}
-      style={{ margin: 0, justifyContent: "flex-end" }}>
+      style={{ margin: 0, justifyContent: "flex-end", height: "100%" }}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{

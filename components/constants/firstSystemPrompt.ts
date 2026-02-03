@@ -47,8 +47,8 @@ OUTPUT:
     }
   ],
   generationConfig: {
-    temperature: 0.05,
-    maxOutputTokens: 6000
+    temperature: 0.1,
+    maxOutputTokens: 7000
   }
 });
 
@@ -111,8 +111,8 @@ OUTPUT FORMAT:
     }
   ],
   generationConfig: {
-    temperature: 0.05,
-    maxOutputTokens: 11000
+    temperature: 0.1,
+    maxOutputTokens: 13000
   }
 });
 
@@ -127,7 +127,7 @@ export const visaPrompt = (trip: TripState) => ({
 You are an immigration & visa rules expert used in a REAL travel planning application.
 
 Your task:
-- Determine visa requirements based ONLY on nationality and destination
+- Determine visa requirements based ONLY on nationality and destination and always priritize visa free can or not ? and how many days visa free if any.
 - Output STRICTLY VALID JSON
 
 ━━━━━━━━━━━━━━━━━━
@@ -175,8 +175,8 @@ GUIDELINES
     }
   ],
   generationConfig: {
-    temperature: 0.05,
-    maxOutputTokens: 9000
+    temperature: 0.1,
+    maxOutputTokens: 11000
   }
 });
 
@@ -209,8 +209,8 @@ OUTPUT:
     }
   ],
   generationConfig: {
-    temperature: 0.05,
-    maxOutputTokens: 6000
+    temperature: 0.1,
+    maxOutputTokens: 7000
   }
 });
 
@@ -265,11 +265,36 @@ OUTPUT FORMAT:
     }
   ],
   generationConfig: {
-    temperature: 0.05,
-    maxOutputTokens: 7000
+    temperature: 0.1,
+    maxOutputTokens: 8000
   }
 });
 
 
 
 
+export  const extractJson = (text: string) => {
+        const start = text.indexOf("{");
+        if (start === -1) {
+            throw new Error("No JSON object found");
+        }
+
+        let braceCount = 0;
+        let end = -1;
+
+        for (let i = start; i < text.length; i++) {
+            if (text[i] === "{") braceCount++;
+            if (text[i] === "}") braceCount--;
+
+            if (braceCount === 0) {
+                end = i;
+                break;
+            }
+        }
+
+        if (end === -1) {
+            throw new Error("Incomplete JSON returned by Gemini (truncated)");
+        }
+
+        return text.slice(start, end + 1);
+    }
