@@ -12,16 +12,18 @@ import { gemini } from "../constants/api";
 import { extractJson, itineraryPrompt, selectLogisticsPrompt, visaPrompt } from "../constants/firstSystemPrompt";
 import { itineraryWithYoutube } from "../constants/flight/youtube";
 import DatePicker from "../ui/DatePicker";
-import { planTripFunc } from "../constants/SubFunction";
+import { planTripFunc } from "../func/SubFunction";
+
 
 type Props = {
     data: TripSummaryItem[];
     onChange: (value: TripSummaryItem[]) => void;
     editMode: boolean;
     setEditMode: (editMode: boolean) => void;
+    onCancel?: () => void;
 };
 
-export default function TripSummaryEdit({ data, onChange, editMode, setEditMode }: Props) {
+export default function TripSummaryEdit({ data, onChange, editMode, setEditMode, onCancel }: Props) {
     const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
     const [showFromCalendar, setShowFromCalendar] = useState(false);
     const [showToCalendar, setShowToCalendar] = useState(false);
@@ -174,13 +176,18 @@ export default function TripSummaryEdit({ data, onChange, editMode, setEditMode 
         setUserPromptsStore(getValue("userPrompt"));
         
         // Now trigger the trip planning
-        planTripFunc();
+        const updatedTrip = useTripStore.getState();
+        planTripFunc(updatedTrip);
         setEditMode(!editMode);
     };
 
     const handleCancel = () => {
         setValidationErrors({});
-        setEditMode(!editMode);
+        if (onCancel) {
+            onCancel();
+        } else {
+            setEditMode(!editMode);
+        }
     };
 
     return (

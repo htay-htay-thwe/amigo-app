@@ -8,7 +8,8 @@ import { useState } from "react";
 import { Keyboard } from "react-native";
 import { useTripStore } from "../../components/store/trip.store";
 import clsx from "clsx";
-import { planTripFunc } from "../../components/constants/SubFunction";
+import { planTripFunc } from "../../components/func/SubFunction";
+
 
 export default function StepSix() {
     const navigation = useNavigation<any>();
@@ -24,12 +25,11 @@ export default function StepSix() {
         }
 
         setUserPromptsStore(userPrompt);
-
+        const trip = useTripStore.getState();
         // Navigate first (UX-friendly)
         navigation.navigate("TripPlan");
-
         // Fire-and-forget
-        planTripFunc();
+        planTripFunc(trip);
     };
 
 

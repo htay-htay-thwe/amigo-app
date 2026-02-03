@@ -2,7 +2,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ItineraryTimeline from "../../components/Timeline/ItineraryTimeline";
 import { useEffect, useRef, useState } from "react";
 import type { TripSummaryItem } from "../../components/constants/types";
-import { Pressable, Text, View, Animated, ScrollView, ActivityIndicator } from "react-native";
+import { Pressable, Text, View, Animated, ScrollView, ActivityIndicator, Modal } from "react-native";
 import TripSummaryEdit from "../../components/TripPlanScreen/TripSummaryEdit";
 import TripSummaryView from "../../components/TripPlanScreen/TripSummaryView";
 import CollapsibleTripHeader from "../../components/TripPlanScreen/CollapsibleTripHeader";
@@ -28,6 +28,7 @@ const messages = [
 export default function TripPlan() {
     const scrollY = useRef(new Animated.Value(0)).current;
     const [editMode, setEditMode] = useState(false);
+    const [originalTripSummary, setOriginalTripSummary] = useState<TripSummaryItem[]>([]);
     const [err, setErr] = useState("");
     const navigation = useNavigation();
     const { loading, error } = usePlanStore();
@@ -103,6 +104,20 @@ export default function TripPlan() {
 
     };
 
+    const handleEditMode = (open: boolean) => {
+        if (open) {
+            // Save a backup before opening
+            setOriginalTripSummary(JSON.parse(JSON.stringify(tripSummary)));
+        }
+        setEditMode(open);
+    };
+
+    const handleCancelEdit = () => {
+        // Restore original data
+        setTripSummary(originalTripSummary);
+        setEditMode(false);
+    };
+
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50">
@@ -111,17 +126,24 @@ export default function TripPlan() {
                 <Text className="mt-2 text-red-500">{err}</Text>
             )}
             {/* Summary */}
-            {editMode ? (
-                <TripSummaryEdit
-                    editMode={editMode}
-                    setEditMode={setEditMode}
-                    data={tripSummary}
-                    onChange={setTripSummary}
-                />
-            ) : (
-                <CollapsibleTripHeader tripSummary={tripSummary} scrollY={scrollY} setEditMode={setEditMode} editMode={editMode} />
+            <CollapsibleTripHeader tripSummary={tripSummary} scrollY={scrollY} setEditMode={handleEditMode} editMode={editMode} />
 
-            )}
+            <Modal
+                visible={editMode}
+                animationType="slide"
+                transparent={false}
+                onRequestClose={handleCancelEdit}
+            >
+                <SafeAreaView className="flex-1 bg-white">
+                    <TripSummaryEdit
+                        editMode={editMode}
+                        setEditMode={handleEditMode}
+                        onCancel={handleCancelEdit}
+                        data={tripSummary}
+                        onChange={setTripSummary}
+                    />
+                </SafeAreaView>
+            </Modal>
 
             <ItineraryTimeline
                 scrollY={scrollY}

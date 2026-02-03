@@ -1,4 +1,4 @@
-import { View, Alert } from "react-native";
+import { View, Alert, Text } from "react-native";
 import PlanCard from "../../components/Save/PlanCard";
 import { useTripStore } from "../../components/store/trip.store";
 import { ScrollView } from "react-native";
@@ -39,14 +39,19 @@ export default function Plan() {
             <ScrollView
                 contentContainerStyle={{ flexGrow: 1 }}
                 keyboardShouldPersistTaps="handled">
+                {myPlans.length === 0 && (
+                    <View className="flex-1 items-center justify-center">
+                        <Text className="text-center text-xl text-gray-400">No Trip Note available.</Text>
+                    </View>
+                )}
                 {myPlans.map((plan, index) => (
                     <PlanCard
-                    key={index}
-                         userInput={plan?.trip_plan}
-                         trip={plan}
-                         onPress={() => planDetails(plan.id)}
-                         onDelete={() => handleDelete(plan.id, plan?.trip_plan?.destination)}
-                         id={plan.id}
+                        key={index}
+                        userInput={plan?.trip_plan}
+                        trip={plan}
+                        onPress={() => planDetails(plan.id)}
+                        onDelete={() => handleDelete(plan.id, plan?.trip_plan?.destination)}
+                        id={plan.id}
                     />))}
             </ScrollView>
         </View>
